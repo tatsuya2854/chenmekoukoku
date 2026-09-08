@@ -25,19 +25,19 @@ LOCK_P = ("photorealistic, 85mm portrait lens, natural skin texture with visible
           "soft warm tungsten light 3200K, shallow depth of field, pastel pink and milk white palette, "
           "editorial Korean beauty campaign look, vertical 4:5 composition. "
           "Do not include any text, logo, watermark, product bottle or brand packaging. No heavy makeup, no revealing pose, "
-          "the woman must clearly look like an adult in her mid twenties.")
+          "the woman must clearly look like an adult in her early twenties (22 to 24), youthful but clearly adult.")
 LOCK_S = ("photorealistic interior, small Japanese apartment, night, single warm bedside lamp 3200K, soft shadows, "
           "pastel pink bedding and milk white walls, shallow depth of field, cinematic still, vertical 9:16 composition, "
           "no people, no text, no logos, no branded products.")
 
 PROMPTS = {
- "R1": ("Portrait of a Japanese woman in her mid twenties, dark brown medium-long hair worn down, gentle relaxed expression "
-        "with a small closed-mouth smile, no-makeup makeup with pink-beige lips, sitting on the edge of a bed in a small pink "
+ "R1": ("Portrait of a youthful Japanese woman in her early twenties (about 22), soft round-ish face, dark brown medium-long hair worn down, gentle relaxed expression "
+        "with a small closed-mouth smile, no-makeup makeup with pink-beige lips, wearing a pastel pink short-sleeve pajama top, sitting on the edge of a bed in a small pink "
         "bedroom at night, looking slightly off camera. " + LOCK_P),
  "R2": ("The same woman as in the reference image, three-quarter profile turned 45 degrees, eyes closed as if exhaling after a "
-        "long day, warm bedside lamp bokeh behind her. Keep her face, hair and skin identical to the reference. " + LOCK_P),
- "R3": ("The same woman as in the reference image, full body, sitting on the bed edge with bare feet on a wooden floor, white "
-        "blouse and greige skirt, beige strappy heels placed beside her on the floor, small cozy Japanese apartment bedroom. "
+        "long day, warm bedside lamp bokeh behind her, same pastel pink short-sleeve pajama top. Keep her face, hair and skin identical to the reference. " + LOCK_P),
+ "R3": ("The same woman as in the reference image, full body, sitting on the bed edge with bare feet on a wooden floor, wearing a matching "
+        "pastel pink short-sleeve pajama set with shorts (soft cotton, ChenMe blush pink), beige strappy heels placed beside her on the floor, small cozy Japanese apartment bedroom. "
         "Keep her face and hair identical to the reference. " + LOCK_P),
  "R4": ("Close-up of the same woman's hands with short milky-pink nails resting on pastel pink bedding, natural skin, warm lamp "
         "light, exactly five fingers on each hand. " + LOCK_P),
@@ -47,7 +47,7 @@ PROMPTS = {
         "lamp, a small candle in a glass, a framed photo, a clear glass cup of herbal tea, the lamp is the only light source. "
         "On the side table stands a plain matte white rounded-rectangle pump bottle without any label, about 2.3 times taller "
         "than wide, slightly smaller than a typical hand-soap bottle, as a placeholder. " + LOCK_S),
- "S3": ("Small white three-tier shelf in a pastel pink bedroom, soft window daylight mixed with warm lamp light, unlabeled frosted "
+ "S3": ("Small white three-tier shelf in a pastel pink bedroom, WARM evening lamp light only (no blue window light), pink and cream tones, unlabeled frosted "
         "glass jars, a small vase of baby's breath, a folded pink towel, a few books, one clearly empty spot at the center of the "
         "middle shelf. " + LOCK_S),
  "S4": ("The same bedroom corner as the reference image but with the lamp switched off, near-black, only a faint outline of the "

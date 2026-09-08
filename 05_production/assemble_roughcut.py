@@ -27,9 +27,22 @@ def font(name,size,wght=None):
         try: f.set_variation_by_axes([wght])
         except Exception: pass
     return f
-F_BODY=lambda s=52: font("NotoSansJP[wght].ttf",s,500)
-F_HEAD=lambda s=84: font("ZenMaruGothic-Medium.ttf",s)
-F_EN=lambda s=96: font("CormorantGaramond[wght].ttf",s,500)
+F_BODY=lambda s=64: font("NotoSansJP[wght].ttf",s,700)     # 太字・座布団
+F_HEAD=lambda s=92: font("NotoSansJP[wght].ttf",s,800)     # 見出し
+F_EN=lambda s=104: font("CormorantGaramond[wght].ttf",s,500)
+
+# ---------- ブランドグレード（全カット共通） ----------
+_VIG=None
+def grade(f):
+    """暖色・シャドウを起こす・軽いフェード・彩度95%・弱いビネット。静止画とAIクリップの色を揃える。"""
+    global _VIG
+    x=f.astype(np.float32)
+    x=x*0.93+14                      # フェード（黒を14へ、白を251へ）
+    x[:,:,0]*=0.95; x[:,:,1]*=0.995; x[:,:,2]*=1.035   # B↓ R↑ = 暖色
+    g=x.mean(axis=2,keepdims=True); x=g+(x-g)*0.95
+    if _VIG is None:
+        yy,xx=np.mgrid[0:H,0:W]; r=np.sqrt(((xx-W/2)/(W/2))**2+((yy-H/2)/(H/2))**2); _VIG=(1-0.18*np.clip(r-0.55,0,1)/0.6)[:,:,None]
+    return np.clip(x*_VIG,0,255).astype(np.uint8)
 
 def cover(img,zoom=1.0,dx=0.0,dy=0.0,rot=0.0):
     """画像を 1080x1920 にカバーフィット。zoom>1 で寄り、dx/dy は中心のずらし（比率）、rot は度。"""
@@ -66,33 +79,52 @@ def paste_bottle(frame,bbox_frac,gain=0.9,shadow=True):
 def bgr2pil(f): return Image.fromarray(cv2.cvtColor(f,cv2.COLOR_BGR2RGB))
 def pil2bgr(im): return cv2.cvtColor(np.asarray(im),cv2.COLOR_RGB2BGR)
 
-def draw_text(frame,text,fnt,color,y,alpha=1.0,shadow=True,x=None,tracking=0):
+import re
+def _segments(text):
+    """【...】で囲んだ部分を強調色に。"""
+    out=[]
+    for part in re.split(r"(【[^】]*】)",text):
+        if not part: continue
+        if part.startswith("【"): out.append((part[1:-1],True))
+        else: out.append((part,False))
+    return out
+
+def draw_text(frame,text,fnt,color,y,alpha=1.0,pill=True,pill_color=MILK,emph=ROSE,tracking=0,scale=1.0,x=None):
+    """y は座布団の中心。pill=True で白い角丸座布団。scale はポップイン用。"""
     im=bgr2pil(frame).convert("RGBA"); layer=Image.new("RGBA",im.size,(0,0,0,0)); d=ImageDraw.Draw(layer)
-    lines=text.split("\n"); lh=fnt.size*1.35; total=lh*len(lines)
+    lines=text.split("\n"); size=fnt.size; lh=size*1.3
+    if scale!=1.0:
+        try: fnt=fnt.font_variant(size=max(1,int(size*scale)))
+        except Exception: pass
+        size=fnt.size; lh=size*1.3
+    def width(line):
+        return sum(d.textlength(t,font=fnt) for t,_ in _segments(line))+tracking*(len(re.sub(r"[【】]","",line))-1)
+    widths=[width(l) for l in lines]; bw=max(widths); total_h=lh*len(lines)
+    padx,pady=int(size*0.55),int(size*0.32)
+    top=y-total_h/2
+    if pill:
+        x0=(W-bw)/2-padx if x is None else x-padx
+        d.rounded_rectangle((x0,top-pady,x0+bw+2*padx,top+total_h+pady),radius=int(size*0.42),fill=pill_color+(int(235*alpha),))
     for i,line in enumerate(lines):
-        if tracking:
-            wdt=sum(d.textlength(ch,font=fnt) for ch in line)+tracking*(len(line)-1)
-        else: wdt=d.textlength(line,font=fnt)
-        xx=(W-wdt)/2 if x is None else x; yy=y+i*lh
-        def put(px,py,col,a):
+        cx=(W-widths[i])/2 if x is None else x; cy=top+i*lh+lh*0.12
+        for seg,em in _segments(line):
+            col=(emph if em else color)
             if tracking:
-                cx=px
-                for ch in line: d.text((cx,py),ch,font=fnt,fill=col+(a,)); cx+=d.textlength(ch,font=fnt)+tracking
-            else: d.text((px,py),line,font=fnt,fill=col+(a,))
-        if shadow:
-            put(xx,yy,(0x6A,0x66,0x64),int(60*alpha))
-        put(xx,yy,color,int(255*alpha))
-    if shadow: layer=Image.alpha_composite(Image.new("RGBA",im.size,(0,0,0,0)),layer)
-    im=Image.alpha_composite(im,layer)
-    return pil2bgr(im.convert("RGB"))
+                for ch in seg:
+                    if not pill: d.text((cx+2,cy+3),ch,font=fnt,fill=(60,40,45,int(90*alpha)))   # 影も同じ字送りで
+                    d.text((cx,cy),ch,font=fnt,fill=col+(int(255*alpha),)); cx+=d.textlength(ch,font=fnt)+tracking
+            else:
+                if not pill: d.text((cx+2,cy+3),seg,font=fnt,fill=(60,40,45,int(90*alpha)))
+                d.text((cx,cy),seg,font=fnt,fill=col+(int(255*alpha),)); cx+=d.textlength(seg,font=fnt)
+    return pil2bgr(Image.alpha_composite(im,layer).convert("RGB"))
 
 def bubble(frame,text,alpha=1.0,y=380):
     im=bgr2pil(frame).convert("RGBA"); layer=Image.new("RGBA",im.size,(0,0,0,0)); d=ImageDraw.Draw(layer)
-    fnt=F_BODY(46); tw=d.textlength(text,font=fnt); pad=36; bw=int(tw+pad*2+70); bh=124
+    fnt=F_BODY(54); tw=d.textlength(text,font=fnt); pad=40; bw=int(tw+pad*2+80); bh=140
     x0=(W-bw)//2
-    d.rounded_rectangle((x0,y,x0+bw,y+bh),radius=30,fill=(255,255,255,int(232*alpha)))
-    d.ellipse((x0+26,y+34,x0+26+56,y+34+56),fill=BLUSH+(int(255*alpha),))
-    d.text((x0+26+56+24,y+(bh-fnt.size)/2-6),text,font=fnt,fill=CHARCOAL+(int(255*alpha),))
+    d.rounded_rectangle((x0,y,x0+bw,y+bh),radius=40,fill=(255,255,255,int(240*alpha)))
+    d.ellipse((x0+30,y+38,x0+30+64,y+38+64),fill=BLUSH+(int(255*alpha),))
+    d.text((x0+30+64+26,y+(bh-fnt.size)/2-8),text,font=fnt,fill=CHARCOAL+(int(255*alpha),))
     return pil2bgr(Image.alpha_composite(im,layer).convert("RGB"))
 
 def fade_a(t,t0,t1,fin=0.3,fout=0.25):
@@ -114,8 +146,11 @@ def render(segs,captions,out_path,end_fade=8):
             if s.src not in cache:
                 im=cv2.imread(P(s.src),cv2.IMREAD_UNCHANGED)
                 if im.ndim==3 and im.shape[2]==4:   # 透過PNG → Blush 背景に乗せる（ラベルマクロ用）
-                    bg=np.zeros((im.shape[0]+200,im.shape[1]+400,3),np.uint8); bg[:]=BLUSH[::-1]
+                    hh,ww=im.shape[0]+200,im.shape[1]+400; bg=np.zeros((hh,ww,3),np.float32)
+                    for yy_ in range(hh): bg[yy_]=np.array(BLUSH[::-1],np.float32)+(np.array(PETAL[::-1],np.float32)-np.array(BLUSH[::-1],np.float32))*(yy_/hh)
                     a=im[:,:,3:4].astype(np.float32)/255; y0,x0=100,200
+                    sh=np.zeros((hh,ww),np.float32); sh[y0+20:y0+im.shape[0]+20, x0+10:x0+im.shape[1]+10]=a[:,:,0]; sh=cv2.GaussianBlur(sh,(0,0),28)*0.35
+                    bg=bg*(1-sh[:,:,None])+np.array([100,90,110],np.float32)*sh[:,:,None]; bg=bg.astype(np.uint8)
                     bg[y0:y0+im.shape[0],x0:x0+im.shape[1]]=(bg[y0:y0+im.shape[0],x0:x0+im.shape[1]]*(1-a)+im[:,:,:3]*a).astype(np.uint8); im=bg
                 cache[s.src]=im
             img=cache[s.src]
@@ -135,19 +170,23 @@ def render(segs,captions,out_path,end_fade=8):
         if "dark" in kw: f=(f.astype(np.float32)*kw["dark"]).astype(np.uint8)
         if "dark_ramp" in kw:  # (a0,a1)
             a0,a1=kw["dark_ramp"]; f=(f.astype(np.float32)*(a0+(a1-a0)*lt/s.dur)).astype(np.uint8)
+        f=grade(f)
         if kw.get("xfade_from") is not None and lt<kw.get("xfade",0.5) and last is not None:
             a=lt/kw["xfade"]; f=cv2.addWeighted(last_prev,1-a,f,a,0)
         if lt<1/FPS: last_prev=last if last is not None else f
         # captions
         for c in captions:
-            a=fade_a(t,c["t0"],c["t1"],c.get("fin",0.3),c.get("fout",0.25))
+            a=fade_a(t,c["t0"],c["t1"],c.get("fin",0.25),c.get("fout",0.2))
             if a<=0: continue
+            pop=0.94+0.06*min(1,(t-c["t0"])/0.25)   # ポップイン
             if c["style"]=="bubble": f=bubble(f,c["text"],a)
             else:
-                st=c["style"]; fnt={"body":F_BODY(c.get("size",52)),"head":F_HEAD(c.get("size",84)),"en":F_EN(c.get("size",96)),"en_sub":F_EN(c.get("size",48))}[st]
-                col={"body":CHARCOAL,"head":CHARCOAL,"en":c.get("color",ROSE),"en_sub":CHARCOAL}[st]
-                yy=c.get("y",{"body":1180,"head":1150,"en":1100,"en_sub":1180}[st]) + (8*(1-min(1,(t-c["t0"])/0.3)) if st!="en" else 0)
-                f=draw_text(f,c["text"],fnt,col,yy,a,tracking=c.get("tracking",6 if st in("en","en_sub") else 0))
+                st=c["style"]
+                fnt={"body":F_BODY(c.get("size",64)),"head":F_HEAD(c.get("size",92)),"en":F_EN(c.get("size",104)),"en_sub":F_EN(c.get("size",52))}[st]
+                col={"body":CHARCOAL,"head":CHARCOAL,"en":c.get("color",ROSE),"en_sub":c.get("color",CHARCOAL)}[st]
+                yy=c.get("y",{"body":1300,"head":1280,"en":1150,"en_sub":1290}[st])
+                pill=c.get("pill", st in ("body","head"))
+                f=draw_text(f,c["text"],fnt,col,yy,a,pill=pill,pill_color=c.get("pill_color",MILK),tracking=c.get("tracking",8 if st in("en","en_sub") else 0),scale=pop if st!="en" else 1.0)
         if n>N-end_fade: f=(f.astype(np.float32)*((N-n)/end_fade)).astype(np.uint8)
         vw.write(f); last=f
     vw.release()
@@ -158,21 +197,20 @@ def render(segs,captions,out_path,end_fade=8):
 def build_A():
     B2=CFG["B2_bottle_bbox"]
     segs=[
-     Seg(1.4,"assets/ai_sets/S1V.png","still",z0=1.05,z1=1.12,d0=(0,0.05),d1=(0,0.12),dark=0.75),
-     Seg(1.2,"assets/ai_sets/S1V.png","still",z0=1.9,z1=2.0,d0=(0.0,0.30),d1=(0.0,0.30),dark=0.85),
-     Seg(1.8,"05_production/generated_video/A3_entry_walk.mp4","clip",start=0.0),
+     Seg(2.4,"05_production/generated_video/A3_entry_walk.mp4","clip",start=0.0),
      Seg(1.8,"05_production/generated_video/B2_lamp_static.mp4","clip",start=0.0,bottle=B2,z0=1.15,z1=1.15,d0=(-0.02,0.05),d1=(-0.02,0.05)),
      Seg(1.4,"05_production/composites/B3_pump_press.jpg","still",z0=1.0,z1=1.05),
-     Seg(2.8,"05_production/generated_video/A6_calf_wrap_v2.mp4","clip",start=1.2,z0=1.6,z1=1.68,d0=(0,0.2),d1=(0,0.22)),
-     Seg(2.0,"05_production/generated_video/A7_face_eyes_open_v2.mp4","clip",start=1.6),
-     Seg(2.6,"05_production/generated_video/B2_lamp_static.mp4","clip",start=1.4,bottle=B2,z0=1.15,z1=1.19,d0=(-0.02,0.05),d1=(-0.02,0.05)),
+     Seg(3.0,"05_production/generated_video/A6_calf_wrap_v2.mp4","clip",start=1.0,z0=1.6,z1=1.68,d0=(0,0.2),d1=(0,0.22)),
+     Seg(2.2,"05_production/generated_video/A7_face_eyes_open_v2.mp4","clip",start=1.4),
+     Seg(1.8,"05_production/composites/B7_tea_bottle_bg.jpg","still",z0=1.0,z1=1.04),
+     Seg(2.4,"05_production/generated_video/B2_lamp_static.mp4","clip",start=1.4,bottle=B2,z0=1.15,z1=1.2,d0=(-0.02,0.05),d1=(-0.02,0.05)),
     ]
     caps=[
-     dict(text="今日、何時間立ってた？",style="body",t0=2.8,t1=4.4),
-     dict(text="靴、脱いだ。",style="body",t0=4.5,t1=6.2),
-     dict(text="今日は、ここまで。",style="body",t0=7.8,t1=10.4),
-     dict(text="明日の私に、ちょっとだけ。",style="body",t0=10.6,t1=12.4),
-     dict(text="Coming back soon",style="en",t0=13.6,t1=15.0,fin=0.4,fout=0.3,y=760),
+     dict(text="今日、【何時間】立ってた？",style="body",t0=0.6,t1=2.4),
+     dict(text="靴、脱いだ。",style="head",t0=2.5,t1=4.2),
+     dict(text="今日は、ここまで。",style="body",t0=5.8,t1=8.6),
+     dict(text="明日の私に、【ちょっとだけ】。",style="body",t0=8.8,t1=10.8),
+     dict(text="Coming back soon",style="en",t0=13.3,t1=15.0,fin=0.4,fout=0.3,y=760),
     ]
     render(segs,caps,P("05_production","roughcuts","A_v01_roughcut.mp4"))
 
@@ -190,11 +228,11 @@ def build_B():
      Seg(1.2,"05_production/generated_video/B8_lamp_off.mp4","clip",start=3.0,bottle=B2,gain=0.55,dark=0.35),
     ]
     caps=[
-     dict(text="夜の3分。",style="head",t0=3.0,t1=4.5,y=330),
-     dict(text="うるおうのに、べたつかない。",style="body",t0=4.8,t1=6.4,y=1400),
-     dict(text="ホワイトシトロンの香り。",style="body",t0=7.2,t1=9.5,y=330),
-     dict(text="今日より明日。",style="head",t0=10.0,t1=11.4,y=330),
-     dict(text="Stay tuned",style="en",t0=13.9,t1=15.0,color=MILK,y=980,size=92,fin=0.5,fout=0.3),
+     dict(text="夜の【3分】。",style="head",t0=3.0,t1=4.5,y=330),
+     dict(text="うるおうのに、【べたつかない】。",style="body",t0=4.8,t1=6.4,y=1380),
+     dict(text="【ホワイトシトロン】の香り。",style="body",t0=7.2,t1=9.5,y=330),
+     dict(text="今日より、明日。",style="head",t0=10.0,t1=11.4,y=330),
+     dict(text="Stay tuned",style="en",t0=13.9,t1=15.0,color=MILK,y=960,size=100,fin=0.5,fout=0.3),
     ]
     render(segs,caps,P("05_production","roughcuts","B_v01_roughcut.mp4"))
 
@@ -213,15 +251,15 @@ def build_C():
     caps=[
      dict(text="もう買えないですか？",style="bubble",t0=0.0,t1=3.4,fin=0.25,fout=0.2),
      dict(text="ごめんね、、、",style="body",t0=1.6,t1=2.5,fin=0.15,fout=0.1,y=300),
-     dict(text="うん、いま在庫切れ",style="body",t0=2.5,t1=3.4,fin=0.15,fout=0.1,y=300),
+     dict(text="うん、いま【在庫切れ】",style="body",t0=2.5,t1=3.4,fin=0.15,fout=0.1,y=300),
      dict(text="ラベルの子、かわいいでしょ",style="body",t0=3.5,t1=5.6,y=300),
-     dict(text="いま、ちょっとお休み中。",style="body",t0=5.7,t1=7.8),
+     dict(text="いま、ちょっと【お休み中】。",style="body",t0=5.7,t1=7.8),
      dict(text="でも、準備してるから。",style="body",t0=7.9,t1=9.0,fout=0.1,y=300),
-     dict(text="戻ってくるから",style="body",t0=9.0,t1=10.2,fin=0.15,y=300),
+     dict(text="【戻ってくる】から",style="head",t0=9.0,t1=10.2,fin=0.15,y=300),
      dict(text="戻ってくる日が決まったら、\nいちばんに。",style="body",t0=10.4,t1=12.0,y=300),
      dict(text="Coming back soon",style="en",t0=12.1,t1=15.0,fin=0.4,fout=0.3,y=480),
-     dict(text="Get notified",style="en_sub",t0=13.7,t1=15.0,fin=0.4,fout=0.3,y=620),
-     dict(text="再販のお知らせはプロフィールから",style="body",size=40,y=700,t0=13.8,t1=15.0,fin=0.4,fout=0.3),
+     dict(text="Get notified",style="en_sub",t0=13.7,t1=15.0,fin=0.4,fout=0.3,y=640),
+     dict(text="再販のお知らせはプロフィールから",style="body",size=40,y=740,t0=13.8,t1=15.0,fin=0.4,fout=0.3,pill=False),
     ]
     render(segs,caps,P("05_production","roughcuts","C_v01_roughcut.mp4"))
 
