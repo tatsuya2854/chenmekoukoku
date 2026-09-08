@@ -11,7 +11,8 @@
 | 2 | `02_research/ad_pattern_analysis.md` | 美容・セルフケア・K-beauty 系ショート広告のパターン分析（型 100 エントリ）。**実視聴ではなく公開レポートからの再構成**、実視聴の手順も同梱 |
 |   | `02_research/ad_database.csv` | 100 行の型データベース（`build_ad_database.py` で生成） |
 |   | `02_research/compliance_yakkiho.md` | 薬機法・景表法チェックリスト |
-| 3 | `03_concepts/10_concepts.md` | 15 秒動画の企画 **12 本**＋採点＋配信設計 |
+|   | `02_research/product_facts.md` | 商品ファクトシート（香り・テクスチャ・成分・無添加・競合・Amazon ページ表現の判定） |
+| 3 | `03_concepts/10_concepts.md` | 15 秒動画の企画 **13 本**＋採点＋配信設計 |
 | 4 | `04_scripts/A_kutsu_nuida.md` | **案A「靴、脱いだ。」** 秒単位台本／絵コンテ／カメラ／出演者／BGM・SE／AIプロンプト／Premiere |
 |   | `04_scripts/B_yoru_no_3pun_asmr.md` | **案B「夜の3分 ASMR」** 同上 |
 |   | `04_scripts/C_urikireteta.md` | **案C「売り切れてた…」** 同上 |
