@@ -1,0 +1,82 @@
+{
+ "B2_lamp_static": {
+  "image": "assets/ai_sets/S2V.png",
+  "prompt": "static, candle flicker only",
+  "sec": 4,
+  "done": true,
+  "file": "05_production/generated_video/B2_lamp_static.mp4",
+  "status": "adopted"
+ },
+ "A7_face_eyes_open": {
+  "image": "assets/ai_talent/R2.png",
+  "prompt": "The woman keeps her eyes closed for a moment, exhales softly, then slowly opens her eyes and gives a small relieved closed-mouth smile, not looking at the camera. Camera static. Photorealistic, warm tungsten bedside lamp light 3200K, soft shadows, shallow depth of field, natural skin texture, 24fps cinematic, vertical 9:16. No text, no logo, no product bottle, no label. Slow, calm, one single motion.",
+  "sec": 4,
+  "done": true,
+  "file": "05_production/generated_video/A7_face_eyes_open.mp4",
+  "status": "rejected(file removed)"
+ },
+ "A6_calf_wrap": {
+  "image": "assets/ai_talent/R3.png",
+  "prompt": "Sitting on the edge of the bed, she leans forward slightly and slowly wraps both hands around her lower leg, gliding gently from knee to ankle in one unhurried stroke. Camera static, subtle handheld sway. Photorealistic, warm tungsten bedside lamp light 3200K, soft shadows, shallow depth of field, natural skin texture, 24fps cinematic, vertical 9:16. No text, no logo, no product bottle, no label. Slow, calm, one single motion.",
+  "sec": 6,
+  "done": true,
+  "file": "05_production/generated_video/A6_calf_wrap.mp4",
+  "status": "rejected(file removed)"
+ },
+ "C5_shelf_slide": {
+  "image": "assets/ai_sets/S3V.png",
+  "prompt": "Very slow lateral camera slide to the right across the shelf, smooth slider motion, all objects perfectly still, soft lamp glow constant. Nothing added. Photorealistic, warm tungsten bedside lamp light 3200K, soft shadows, shallow depth of field, natural skin texture, 24fps cinematic, vertical 9:16. No text, no logo, no product bottle, no label. Slow, calm, one single motion.",
+  "sec": 4,
+  "done": true,
+  "file": "05_production/generated_video/C5_shelf_slide.mp4",
+  "status": "rejected(file removed)"
+ },
+ "C5_shelf_slide_v2": {
+  "image": "assets/ai_sets/S3V.png",
+  "prompt": "Very slow, small lateral camera slide to the right, moving only a few centimeters, smooth slider motion. The shelf and all objects stay perfectly still and fully visible for the entire clip, the lamp glow stays constant. Photorealistic, warm tungsten lamp light 3200K, soft shadows, shallow depth of field, 24fps cinematic, vertical 9:16. No text, no logo, no label. No people entering the frame. No foreground objects passing in front of the camera. Slow and calm.",
+  "sec": 4,
+  "done": true,
+  "file": "05_production/generated_video/C5_shelf_slide_v2.mp4",
+  "status": "rejected(file removed)"
+ },
+ "A3_entry_walk": {
+  "image": "assets/ai_sets/S1V.png",
+  "prompt": "Handheld first-person camera slowly walks forward from the dark entryway toward the warm light of the bedroom doorway, gentle natural sway, the heels on the floor pass by at the bottom of the frame. Photorealistic, warm tungsten lamp light 3200K, soft shadows, shallow depth of field, 24fps cinematic, vertical 9:16. No text, no logo, no label. No people entering the frame. No foreground objects passing in front of the camera. Slow and calm.",
+  "sec": 4,
+  "done": true,
+  "file": "05_production/generated_video/A3_entry_walk.mp4",
+  "status": "adopted"
+ },
+ "A8_pushin": {
+  "image": "assets/ai_sets/S2V.png",
+  "prompt": "Extremely slow push-in of about three percent toward the white side table, everything perfectly still, candle flame flickers very gently, lamp light constant. Photorealistic, warm tungsten lamp light 3200K, soft shadows, shallow depth of field, 24fps cinematic, vertical 9:16. No text, no logo, no label. No people entering the frame. No foreground objects passing in front of the camera. Slow and calm.",
+  "sec": 4,
+  "done": true,
+  "file": "05_production/generated_video/A8_pushin.mp4",
+  "status": "rejected(file removed)"
+ },
+ "B8_lamp_off": {
+  "image": "assets/ai_sets/S2V.png",
+  "prompt": "Static camera. After two seconds the bedside lamp switches off and the room falls almost dark, only the faint candle glow and the silhouettes of the objects on the side table remain. Nothing else moves. Photorealistic, warm tungsten lamp light 3200K, soft shadows, shallow depth of field, 24fps cinematic, vertical 9:16. No text, no logo, no label. No people entering the frame. No foreground objects passing in front of the camera. Slow and calm.",
+  "sec": 4,
+  "done": true,
+  "file": "05_production/generated_video/B8_lamp_off.mp4",
+  "status": "adopted"
+ },
+ "A7_face_eyes_open_v2": {
+  "image": "assets/ai_talent/R2V.png",
+  "prompt": "The woman keeps her eyes closed for a moment, exhales softly, then slowly opens her eyes and gives a small relieved closed-mouth smile, not looking at the camera. Photorealistic, warm tungsten bedside lamp light 3200K, soft shadows, shallow depth of field, natural skin texture, 24fps cinematic, vertical 9:16. Camera completely static. No text, no logo, no product bottle, no label. Nobody else enters the frame. Slow, calm, one single motion.",
+  "sec": 4,
+  "done": true,
+  "file": "05_production/generated_video/A7_face_eyes_open_v2.mp4",
+  "status": "adopted"
+ },
+ "A6_calf_wrap_v2": {
+  "image": "assets/ai_talent/R3V.png",
+  "prompt": "Sitting on the edge of the bed, she leans forward slightly and slowly wraps both hands around her lower leg, gliding gently from knee to ankle in one unhurried stroke, then rests her hands. Photorealistic, warm tungsten bedside lamp light 3200K, soft shadows, shallow depth of field, natural skin texture, 24fps cinematic, vertical 9:16. Camera completely static. No text, no logo, no product bottle, no label. Nobody else enters the frame. Slow, calm, one single motion.",
+  "sec": 6,
+  "done": true,
+  "file": "05_production/generated_video/A6_calf_wrap_v2.mp4",
+  "status": "adopted"
+ }
+}

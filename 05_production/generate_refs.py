@@ -56,11 +56,16 @@ PROMPTS = {
 for _k in ("S1","S2","S3","S4"):
     PROMPTS[_k+"V"] = ("Recreate exactly the same scene as the reference image, same room, same furniture, same objects, same lighting and colors, "
                        "but reframed as a vertical 9:16 composition with more ceiling/wall above and floor below, nothing added or removed. " + LOCK_S)
-REF_FOR = {"S1V": "assets/ai_sets/S1.png", "S2V": "assets/ai_sets/S2.png", "S3V": "assets/ai_sets/S3.png", "S4V": "assets/ai_sets/S4.png",
+for _k in ("R2","R3"):
+    PROMPTS[_k+"V"] = ("Recreate exactly the same scene and the same woman as the reference image: identical face, hair, expression, clothing, pose, "
+                       "lighting and room, but reframed as a vertical 9:16 full-height composition with more room above her head and below, "
+                       "nothing added or removed. " + LOCK_P.replace("vertical 4:5","vertical 9:16"))
+
+REF_FOR = {"R2V": "assets/ai_talent/R2.png", "R3V": "assets/ai_talent/R3.png", "S1V": "assets/ai_sets/S1.png", "S2V": "assets/ai_sets/S2.png", "S3V": "assets/ai_sets/S3.png", "S4V": "assets/ai_sets/S4.png",
 "R2": "assets/ai_talent/R1.png", "R3": "assets/ai_talent/R1.png", "R4": "assets/ai_talent/R1.png", "S4": "assets/ai_sets/S2.png"}
 ADOPT_DIR = {"R": "assets/ai_talent", "S": "assets/ai_sets"}
 
-ASPECT = {"R": "4:5", "S": "9:16"}
+ASPECT = {"R": "4:5", "S": "9:16", "R2V": "9:16", "R3V": "9:16"}
 
 def call(prompt, ref=None, pid="S"):
     parts = [{"text": prompt}]
@@ -68,11 +73,11 @@ def call(prompt, ref=None, pid="S"):
         with open(ref, "rb") as f:
             parts.insert(0, {"inline_data": {"mime_type": "image/png", "data": base64.b64encode(f.read()).decode()}})
     if OAUTH and PROJECT:
-        body = {"contents": [{"role": "user", "parts": parts}], "generationConfig": {"responseModalities": ["IMAGE"], "imageConfig": {"aspectRatio": ASPECT[pid[0]]}}}
+        body = {"contents": [{"role": "user", "parts": parts}], "generationConfig": {"responseModalities": ["IMAGE"], "imageConfig": {"aspectRatio": ASPECT.get(pid, ASPECT[pid[0]])}}}
         url = f"https://aiplatform.googleapis.com/v1/projects/{PROJECT}/locations/global/publishers/google/models/{MODEL}:generateContent"
         headers = {"Authorization": f"Bearer {OAUTH}", "Content-Type": "application/json"}
     else:
-        body = {"contents": [{"parts": parts}], "generationConfig": {"responseModalities": ["IMAGE"], "imageConfig": {"aspectRatio": ASPECT[pid[0]]}}}
+        body = {"contents": [{"parts": parts}], "generationConfig": {"responseModalities": ["IMAGE"], "imageConfig": {"aspectRatio": ASPECT.get(pid, ASPECT[pid[0]])}}}
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent"
         headers = {"x-goog-api-key": KEY, "Content-Type": "application/json"}
     req = urllib.request.Request(url, data=json.dumps(body).encode(), headers=headers)
