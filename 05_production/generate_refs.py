@@ -3,6 +3,8 @@
 R1〜R4（AI出演者）・S1〜S4（セット）の候補を Gemini 画像モデルで生成し、コンタクトシートを作る。
 使い方:
   export GEMINI_API_KEY=...   # Google AI Studio で発行（https://aistudio.google.com/apikey）
+  # または Vertex AI 経由（AI Studio の前払い残高に依存しない。プロジェクトの請求先に後払い）:
+  export GOOGLE_OAUTH_TOKEN=ya29...  GOOGLE_CLOUD_PROJECT=gen-lang-client-xxxx
   python3 05_production/generate_refs.py            # 全部（各4候補）
   python3 05_production/generate_refs.py R1 S2      # 指定だけ
   python3 05_production/generate_refs.py --adopt R1=2 S2=1   # 候補番号を採用して assets/ にコピー
@@ -14,6 +16,8 @@ from PIL import Image, ImageDraw
 
 MODEL = os.environ.get("GEMINI_IMAGE_MODEL", "gemini-2.5-flash-image")
 KEY = os.environ.get("GEMINI_API_KEY")
+OAUTH = os.environ.get("GOOGLE_OAUTH_TOKEN")          # Vertex AI 経由（OAuth アクセストークン、cloud-platform スコープ）
+PROJECT = os.environ.get("GOOGLE_CLOUD_PROJECT")      # Vertex 使用時のプロジェクト ID
 OUT = "05_production/generated"; os.makedirs(OUT, exist_ok=True)
 N = int(os.environ.get("N_CANDIDATES", "4"))
 
@@ -42,25 +46,36 @@ PROMPTS = {
  "S2": ("Cozy bedroom corner, bed with pastel pink sheets and a soft pink knit blanket, white wooden side table with a small warm "
         "lamp, a small candle in a glass, a framed photo, a clear glass cup of herbal tea, the lamp is the only light source. "
         "On the side table stands a plain matte white rounded-rectangle pump bottle without any label, about 2.3 times taller "
-        "than wide, as a placeholder. " + LOCK_S),
+        "than wide, slightly smaller than a typical hand-soap bottle, as a placeholder. " + LOCK_S),
  "S3": ("Small white three-tier shelf in a pastel pink bedroom, soft window daylight mixed with warm lamp light, unlabeled frosted "
         "glass jars, a small vase of baby's breath, a folded pink towel, a few books, one clearly empty spot at the center of the "
         "middle shelf. " + LOCK_S),
  "S4": ("The same bedroom corner as the reference image but with the lamp switched off, near-black, only a faint outline of the "
         "lamp and the placeholder bottle silhouette visible. " + LOCK_S),
 }
-REF_FOR = {"R2": "assets/ai_talent/R1.png", "R3": "assets/ai_talent/R1.png", "R4": "assets/ai_talent/R1.png", "S4": "assets/ai_sets/S2.png"}
+for _k in ("S1","S2","S3","S4"):
+    PROMPTS[_k+"V"] = ("Recreate exactly the same scene as the reference image, same room, same furniture, same objects, same lighting and colors, "
+                       "but reframed as a vertical 9:16 composition with more ceiling/wall above and floor below, nothing added or removed. " + LOCK_S)
+REF_FOR = {"S1V": "assets/ai_sets/S1.png", "S2V": "assets/ai_sets/S2.png", "S3V": "assets/ai_sets/S3.png", "S4V": "assets/ai_sets/S4.png",
+"R2": "assets/ai_talent/R1.png", "R3": "assets/ai_talent/R1.png", "R4": "assets/ai_talent/R1.png", "S4": "assets/ai_sets/S2.png"}
 ADOPT_DIR = {"R": "assets/ai_talent", "S": "assets/ai_sets"}
 
-def call(prompt, ref=None):
+ASPECT = {"R": "4:5", "S": "9:16"}
+
+def call(prompt, ref=None, pid="S"):
     parts = [{"text": prompt}]
     if ref and os.path.exists(ref):
         with open(ref, "rb") as f:
             parts.insert(0, {"inline_data": {"mime_type": "image/png", "data": base64.b64encode(f.read()).decode()}})
-    body = {"contents": [{"parts": parts}], "generationConfig": {"responseModalities": ["IMAGE"]}}
-    req = urllib.request.Request(
-        f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent",
-        data=json.dumps(body).encode(), headers={"x-goog-api-key": KEY, "Content-Type": "application/json"})
+    if OAUTH and PROJECT:
+        body = {"contents": [{"role": "user", "parts": parts}], "generationConfig": {"responseModalities": ["IMAGE"], "imageConfig": {"aspectRatio": ASPECT[pid[0]]}}}
+        url = f"https://aiplatform.googleapis.com/v1/projects/{PROJECT}/locations/global/publishers/google/models/{MODEL}:generateContent"
+        headers = {"Authorization": f"Bearer {OAUTH}", "Content-Type": "application/json"}
+    else:
+        body = {"contents": [{"parts": parts}], "generationConfig": {"responseModalities": ["IMAGE"], "imageConfig": {"aspectRatio": ASPECT[pid[0]]}}}
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent"
+        headers = {"x-goog-api-key": KEY, "Content-Type": "application/json"}
+    req = urllib.request.Request(url, data=json.dumps(body).encode(), headers=headers)
     with urllib.request.urlopen(req, timeout=180) as r:
         j = json.load(r)
     for c in j.get("candidates", []):
@@ -81,7 +96,7 @@ def sheet(pid):
     sh.save(f"{OUT}/{pid}_sheet.jpg", quality=88); print("sheet", f"{OUT}/{pid}_sheet.jpg")
 
 def generate(ids):
-    if not KEY: sys.exit("GEMINI_API_KEY が未設定。AI Studio で発行して export してから実行。")
+    if not KEY and not (OAUTH and PROJECT): sys.exit("GEMINI_API_KEY か、GOOGLE_OAUTH_TOKEN + GOOGLE_CLOUD_PROJECT を設定して実行。")
     for pid in ids:
         ref = REF_FOR.get(pid)
         if ref and not os.path.exists(ref): print(f"[{pid}] 参照 {ref} が未採用。先に採用するか、参照なしで生成する"); 
@@ -90,7 +105,7 @@ def generate(ids):
             if os.path.exists(path): continue
             for attempt in range(3):
                 try:
-                    png = call(PROMPTS[pid], ref); open(path, "wb").write(png); print("ok", path); break
+                    png = call(PROMPTS[pid], ref, pid); open(path, "wb").write(png); print("ok", path); break
                 except Exception as e:
                     print("retry", pid, n, attempt, str(e)[:160]); time.sleep(3 * (attempt + 1))
         sheet(pid)

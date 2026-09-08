@@ -1,0 +1,2 @@
+05_production/generated/*.png
+!05_production/generated/*_sheet.jpg

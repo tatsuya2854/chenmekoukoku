@@ -23,6 +23,12 @@
 
 ---
 
+## 0b. 進捗（2026-09-08 夜）
+- **R1〜R4、S1〜S4 は生成・採用済み** → `assets/ai_talent/`、`assets/ai_sets/`。候補のコンタクトシートは `05_production/generated/*_sheet.jpg`。
+- 生成経路：Google AI Studio の API キーは無料枠／前払い残高 0 で画像モデルが通らなかったため、**Vertex AI（OAuth トークン＋課金有効プロジェクト）**で生成。手順は `generate_refs.py` 冒頭。
+- 実証：`samples/composite_S2_realbottle.jpg` ＝ AI セット S2 のプレースホルダーを実物ボトルの切り抜きで覆った合成。違和感なし。
+- 学び：①参照画像付きの生成は 1 分あたりのレート制限に当たりやすい → **直列・20 秒間隔**で回す。②デフォルト出力は正方形 → `imageConfig.aspectRatio` で 9:16 / 4:5 を指定（スクリプト対応済み）。③プレースホルダーは「実物より少し小さめ」と書く。
+
 ## 1. AI 出演者「ChenMe の子」キャラクターシート
 
 ### 1.1 仕様（ブランドブック §6.4 準拠）
