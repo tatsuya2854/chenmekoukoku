@@ -18,7 +18,7 @@ CHARCOAL=(0x6A,0x66,0x64); ROSE=(0xC1,0x28,0x44); MILK=(0xFF,0xF8,0xF6); BLUSH=(
 # ---- 座標（比率）: グリッドで実測して入れる ----
 CFG={
  "B2_bottle_bbox": (0.285,0.47,0.08,0.118),   # B2/B8 動画内プレースホルダー x,y,w,h
- "S3V_empty_spot": (0.605,0.535,0.06,0.13),   # 棚の空き（ボトルを置く位置）
+ "S3V_empty_spot": (0.405,0.395,0.10,0.135),   # 棚の空き（ボトルを置く位置）
 }
 
 def font(name,size,wght=None):
@@ -200,8 +200,8 @@ def build_A():
      Seg(2.4,"05_production/generated_video/A3_entry_walk.mp4","clip",start=0.0),
      Seg(1.8,"05_production/generated_video/B2_lamp_static.mp4","clip",start=0.0,bottle=B2,z0=1.15,z1=1.15,d0=(-0.02,0.05),d1=(-0.02,0.05)),
      Seg(1.4,"05_production/composites/B3_pump_press.jpg","still",z0=1.0,z1=1.05),
-     Seg(3.0,"05_production/generated_video/A6_calf_wrap_v2.mp4","clip",start=1.0,z0=1.6,z1=1.68,d0=(0,0.2),d1=(0,0.22)),
-     Seg(2.2,"05_production/generated_video/A7_face_eyes_open_v2.mp4","clip",start=1.4),
+     Seg(3.0,"05_production/generated_video/A6_calf_wrap_v3.mp4","clip",start=1.0,z0=1.6,z1=1.68,d0=(0,0.2),d1=(0,0.22)),
+     Seg(2.2,"05_production/generated_video/A7_face_eyes_open_v3.mp4","clip",start=1.4),
      Seg(1.8,"05_production/composites/B7_tea_bottle_bg.jpg","still",z0=1.0,z1=1.04),
      Seg(2.4,"05_production/generated_video/B2_lamp_static.mp4","clip",start=1.4,bottle=B2,z0=1.15,z1=1.2,d0=(-0.02,0.05),d1=(-0.02,0.05)),
     ]
@@ -221,8 +221,8 @@ def build_B():
      Seg(1.6,"05_production/generated_video/B2_lamp_static.mp4","clip",start=0.0,bottle=B2,xfade_from=True,xfade=0.5),
      Seg(2.2,"05_production/composites/B3_pump_press.jpg","still",z0=1.0,z1=1.05),
      Seg(1.8,"05_production/composites/B4_cream_palms.png","still",z0=1.0,z1=1.04),
-     Seg(3.2,"05_production/generated_video/A6_calf_wrap_v2.mp4","clip",start=1.0,z0=1.6,z1=1.68,d0=(0,0.2),d1=(0,0.22)),
-     Seg(1.8,"05_production/generated_video/A6_calf_wrap_v2.mp4","clip",start=4.2,z0=1.68,z1=1.68,d0=(0,0.22),d1=(0,0.22)),
+     Seg(3.2,"05_production/generated_video/B5_calf_closeup_v3.mp4","clip",start=0.8,z0=1.6,z1=1.68,d0=(0,0.2),d1=(0,0.22)),
+     Seg(1.8,"05_production/generated_video/B5_calf_closeup_v3.mp4","clip",start=4.0,z0=1.68,z1=1.68,d0=(0,0.22),d1=(0,0.22)),
      Seg(1.4,"05_production/composites/B7_tea_bottle_bg.jpg","still",z0=1.0,z1=1.03),
      Seg(1.0,"05_production/generated_video/B8_lamp_off.mp4","clip",start=1.2,bottle=B2,dark_ramp=(1.0,0.6)),
      Seg(1.2,"05_production/generated_video/B8_lamp_off.mp4","clip",start=3.0,bottle=B2,gain=0.55,dark=0.35),

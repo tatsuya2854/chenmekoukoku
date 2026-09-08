@@ -78,5 +78,29 @@
   "done": true,
   "file": "05_production/generated_video/A6_calf_wrap_v2.mp4",
   "status": "adopted"
+ },
+ "A7_face_eyes_open_v3": {
+  "op": "projects/gen-lang-client-0924303510/locations/us-central1/publishers/google/models/veo-3.1-fast-generate-001/operations/7d8ca8fb-d1b3-40dd-b9dd-33f93dd96c26",
+  "image": "assets/ai_talent/R2V.png",
+  "prompt": "The young woman keeps her eyes closed for a moment, exhales softly, then slowly opens her eyes and gives a small relieved closed-mouth smile, not looking at the camera. Photorealistic, warm bedside lamp light 3200K, soft shadows, shallow depth of field, natural skin texture, 24fps cinematic, vertical 9:16, camera completely static. No text, no logo, no product bottle, no label. Slow, calm, one single motion. She wears the same pastel pink short-sleeve pajamas.",
+  "sec": 4,
+  "done": true,
+  "file": "05_production/generated_video/A7_face_eyes_open_v3.mp4"
+ },
+ "A6_calf_wrap_v3": {
+  "op": "projects/gen-lang-client-0924303510/locations/us-central1/publishers/google/models/veo-3.1-fast-generate-001/operations/f1b93549-5052-4a19-b04b-c6ad2cb64f9a",
+  "image": "assets/ai_talent/R3V.png",
+  "prompt": "Sitting on the edge of the bed in her pink pajama shorts, she leans forward slightly and slowly wraps both hands around her lower leg, gliding gently from knee to ankle in one unhurried stroke, then rests. Photorealistic, warm bedside lamp light 3200K, soft shadows, shallow depth of field, natural skin texture, 24fps cinematic, vertical 9:16, camera completely static. No text, no logo, no product bottle, no label. Slow, calm, one single motion. She wears the same pastel pink short-sleeve pajamas.",
+  "sec": 6,
+  "done": true,
+  "file": "05_production/generated_video/A6_calf_wrap_v3.mp4"
+ },
+ "B5_calf_closeup_v3": {
+  "op": "projects/gen-lang-client-0924303510/locations/us-central1/publishers/google/models/veo-3.1-fast-generate-001/operations/3d1b1546-c192-4ffc-b424-684f6eb9d6bb",
+  "image": "assets/ai_talent/R3V.png",
+  "prompt": "Close view: sitting on the bed edge in pink pajama shorts, her hands gently wrap around her calf and glide slowly from knee to ankle, thumbs drawing small circles, one unhurried stroke. Photorealistic, warm bedside lamp light 3200K, soft shadows, shallow depth of field, natural skin texture, 24fps cinematic, vertical 9:16, camera completely static. No text, no logo, no product bottle, no label. Slow, calm, one single motion. She wears the same pastel pink short-sleeve pajamas.",
+  "sec": 6,
+  "done": true,
+  "file": "05_production/generated_video/B5_calf_closeup_v3.mp4"
  }
 }
