@@ -1,2 +1,3 @@
 05_production/generated/*.png
 !05_production/generated/*_sheet.jpg
+05_production/generated_hands/*.png

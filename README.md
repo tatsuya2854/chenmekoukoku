@@ -19,6 +19,7 @@
 |   | `04_scripts/storyboards/*.svg` | 3 案の絵コンテ（構図ラフ、セーフゾーン表示） |
 | 5 | `05_production/bottle_placement_workflow.md` | ボトルを改変ゼロで動画に置く方法（実写／合成／image-to-video）と検証コマンド |
 |   | `05_production/premiere_common_setup.md` | Premiere の共通セットアップ、.mogrt 仕様、書き出し |
+|   | `05_production/gen_hands.py` / `composite_hands.py` | 現物なしで「AI の手 × 実物ボトル切り抜き」を作る。結果は `05_production/composites/` |
 |   | `05_production/generate_refs.py` / `veo_gen.py` | 静止画（Gemini 画像）と動画（Veo 3.1）を Vertex AI で生成するスクリプト。生成結果は `05_production/generated*/` |
 |   | `05_production/ai_talent_and_set.md` | **AI 出演者・AI セットの制作ガイド**（キャラシート、セット・バイブル、ショット別 AI/実写、法務・開示） |
 |   | `02_research/community_comments.md` | 実在コメント（匿名化）とその使い方、許諾 DM テンプレ |
