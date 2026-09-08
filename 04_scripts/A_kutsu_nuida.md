@@ -2,6 +2,8 @@
 ### 型：解放POV → ナイトケア　／　9:16　1080×1920　24fps　15.0秒　／　音あり前提・音OFFでも成立
 規定：`01_brandbook/`　薬機：`02_research/compliance_yakkiho.md`　ボトル：`05_production/bottle_placement_workflow.md`
 
+> **実物基準（2026-09-08）**：ボトルはマットな白・角丸・なだらかな肩。ラベルのピンクは実物の方が濃い。合成は `assets/product/bottle_front_cutout_level.png`、ポンプのマクロ（#5）は実写必須。
+
 ---
 
 ## 1. コンセプト

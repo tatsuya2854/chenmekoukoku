@@ -2,6 +2,8 @@
 ### 型：コメント返し × 再販ティザー　／　9:16　1080×1920　24fps　15.0秒　／　小声ナレーション＋全文字幕
 規定：`01_brandbook/`　薬機：`02_research/compliance_yakkiho.md`　ボトル：`05_production/bottle_placement_workflow.md`
 
+> **実物基準（2026-09-08）**：#1・#2 の握り方は `05_real_bottle_handheld_wood.jpg`（親指を側面、四指を裏。ラベルを隠さない）。ラベルマクロ（#3）は実写必須（切り抜きの解像度では足りない）。
+
 ---
 
 ## 1. コンセプト

@@ -27,8 +27,26 @@
 ---
 
 ## 2. 合成の手順（方法2）
-### 2.1 切り抜き素材を作る（1 回だけ）
-1. `assets/product/02_bottle_cream_flatlay_pink.jpg`（正面・9:16・単色背景）を使う。正式 PNG（透過）が届いたらそれを最優先。
+### 2.1 切り抜き素材（作成済み：2026-09-08）
+**`assets/product/bottle_front_cutout_level.png`（474×1056、透過、水平化済み）を標準で使う。** 元は実物写真 `06_real_bottle_front_wall.jpg`。
+再生成手順（同じ結果を出すため）：
+```bash
+pip install rembg onnxruntime opencv-python-headless
+python3 - <<'PY'
+from rembg import remove, new_session; from PIL import Image
+im=Image.open("assets/product/06_real_bottle_front_wall.jpg")
+out=remove(im, session=new_session("isnet-general-use"), alpha_matting=True,
+           alpha_matting_foreground_threshold=240, alpha_matting_background_threshold=20, alpha_matting_erode_size=8)
+out.save("rembg_06.png")
+PY
+# → 最大連結成分だけ残す → 本体の左右エッジから傾きを測って回転（スケール 1.0）→ 余白をトリム
+```
+- **解像度の限界**：全高 1056px。1080×1920 のフレームで**ボトル全高がフレームの 50%（960px）以下**なら等倍以下で置ける。それ以上に寄るカット（ポンプのマクロ、ラベルのマクロ）は**実写**。
+- **傾き**：写真そのままの `bottle_front_cutout.png` は約 1〜2° 右に傾いている（左右のエッジで 0.1°〜2.3°、軽い遠近あり。回転は平均の 1.2°）。手持ち風に見せたい時はこちら、置きカットは `_level` を使う。
+- より高解像度の正式画像（印刷用ラベルデータ、メーカー撮影の PNG）が入手できたら、同じ手順で作り直して差し替える。
+
+（旧手順：Photoshop で手動切り抜きする場合）
+1. `06_real_bottle_front_wall.jpg` を使う（レンダー 02 は質感が実物と違うため合成には使わない）。
 2. Photoshop：**選択とマスク** → 被写体を選択 → 境界を 1px 内側 → ぼかし 0.5px。ポンプの細い部分は手で補正。
 3. **絶対に「ゆがみ」「遠近法」「自由変形の非等倍」を使わない**。書き出し：`bottle_front_cutout.png`（元解像度のまま、sRGB）。
 4. 参考の"影"は入れない（影はシーン側で作る）。
@@ -45,7 +63,7 @@
 | 検証 | 100% 拡大で①ラベル文字の縦横比②ポンプの直線③枠線の直線 を目視。元画像と並べて確認 | 同じ |
 
 ### 2.3 AI プレート側の作り方
-- 生成時のプロンプトに **「white plain rectangular pump bottle without any label as a placeholder」** を入れて位置と影を取る。生成後、そのプレースホルダーの上にカットアウトを重ねる（プレースホルダーは隠れる）。
+- 生成時のプロンプトに **「a plain matte white rounded-rectangle pump bottle without any label as a placeholder, about 2.3 times taller than wide, pump head roughly the top 30% of its height」** を入れて位置と影を取る（実物の比率：全高:幅 ≈ 2.26、本体 ≈ 1.58、ポンプ ≈ 全高の 30%）。生成後、そのプレースホルダーの上にカットアウトを重ねる（プレースホルダーは隠れる）。
 - 大きさが合わない場合は**プレートを**スケールする。ボトルは等倍のまま。
 - 手がボトルを持つショット（C#1,2）は合成しない。**実写のみ**（指とボトルの前後関係が破綻する）。
 
@@ -82,3 +100,9 @@ magick compare -metric SSIM b0.png bN.png diff.png
 - ラベルのイラストや文字をアニメーション化（ラベルの子が"動く"演出は不可）
 - 別フォントで「ChenMe」「ほぐほぐクリーム」を打ち直す
 - ボトルを浮かせる・回す・液体を派手に飛ばす
+
+---
+
+## 6. 合成テスト（2026-09-08）
+`samples/composite_test_A8.jpg`：A#8 の構図で、`bottle_front_cutout_level.png` を **等倍以下の均等スケール（0.82×）** で Blush→Petal のグラデ＋Milk White の台に置いたもの。接地影は影レイヤーのみ潰し＋ブラー、ボトル本体は露出 +4% のみ。`_guides.jpg` はセーフゾーン枠付きのレビュー用。
+この方法で、AI 生成した空間にもそのまま置ける（背景を AI プレートに差し替えるだけ）。

@@ -2,6 +2,8 @@
 ### 型：ナイトルーティン手元ASMR　／　9:16　1080×1920　24fps（素材 60fps）　15.0秒　／　音が主役。音OFFでも質感で成立
 規定：`01_brandbook/`　薬機：`02_research/compliance_yakkiho.md`　ボトル：`05_production/bottle_placement_workflow.md`
 
+> **実物基準（2026-09-08）**：#2 の開始フレームは `01_bottle_bedroom_pink.jpg`（レンダー）ではなく、**実物を同構図で撮った静止画**を優先。レンダーはラベルの彩度が低く実物と差が出る。合成は `bottle_front_cutout_level.png`。
+
 ---
 
 ## 1. コンセプト
