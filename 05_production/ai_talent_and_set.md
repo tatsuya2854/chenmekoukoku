@@ -12,7 +12,14 @@
 | 声（C の VO） | **中の人の実声**を推奨。無理なら AI 音声（ElevenLabs 等）＋ AI 開示 | 本物の声が一番安く一番信頼される |
 | 音（SE） | 実録（ポンプ・とろ・カチッ） | AI 動画に音は付けない（Veo のネイティブ音声は OFF） |
 
-> この環境から画像・動画は生成できない。以下は**そのまま貼れるプロンプトと手順**。生成は Midjourney／Imagen／Flux（静止画）→ Runway Gen-4 References／Kling 3.0 Elements／Veo 3.1（動画）で。
+> **静止画（R1〜R4・S1〜S4）は、この環境から Google Gemini の画像モデルで生成できる**（エンドポイント到達を確認済み）。必要なのは Gemini API キー 1 つ。`generate_refs.py` が各 4 候補を生成してコンタクトシートを作り、`--adopt` で採用画像を `assets/` に置く。動画は Runway Gen-4 References／Kling 3.0 Elements／Veo 3.1 で（こちらは各ツールの UI から）。
+>
+> ```bash
+> export GEMINI_API_KEY=...            # https://aistudio.google.com/apikey
+> python3 05_production/generate_refs.py R1 S1 S2 S3   # 参照不要のものから
+> python3 05_production/generate_refs.py --adopt R1=2 S2=1  # シートを見て採用
+> python3 05_production/generate_refs.py R2 R3 R4 S4   # 採用画像を参照して生成
+> ```
 
 ---
 
