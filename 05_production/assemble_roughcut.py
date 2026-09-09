@@ -190,7 +190,7 @@ def render(segs,captions,out_path,end_fade=8):
             if kw.get("reveal"):   # 無地ボトル → 実物ラベルが浮かび上がる（最終フレームの無地ボトル位置に合成し、クロスフェード）
                 key=("reveal",s.src)
                 if key not in cache:
-                    bb=find_plain_bottle(fr[-1],kw.get("reveal_region",(0.30,0.30,0.70,0.60))) or CFG["S3V_empty_spot"]
+                    bb=kw.get("reveal_bbox") or find_plain_bottle(fr[-1],kw.get("reveal_region",(0.30,0.30,0.70,0.60))) or CFG["S3V_empty_spot"]; print("reveal bbox",bb)
                     cache[key]=(bb,paste_bottle(fr[-1],bb,gain=kw.get("gain",0.92),shadow=False))
                 bb,labeled=cache[key]
                 a=min(1.0,max(0.0,(lt-kw.get("reveal_at",0.0))/kw.get("reveal_dur",0.6)))
@@ -307,8 +307,8 @@ def build_C2():
      Seg(2.2,"05_production/generated_video/C3_pump_press.mp4","clip",start=0.4),
      Seg(2.2,"05_production/generated_video/C4_place.mp4","clip",start=0.6),
      Seg(3.6,"05_production/generated_video/C5_shelf_place.mp4","clip",start=0.6),
-     Seg(1.4,"05_production/generated_video/C5_shelf_place.mp4","clip",hold_last=True,reveal=True,reveal_at=0.2,reveal_dur=0.8,z0=1.0,z1=1.03),
-     Seg(2.2,"05_production/generated_video/C5_shelf_place.mp4","clip",hold_last=True,reveal=True,reveal_at=-9,reveal_dur=0.1,z0=1.03,z1=1.07),
+     Seg(1.4,"05_production/generated_video/C5_shelf_place.mp4","clip",hold_last=True,reveal=True,reveal_at=0.2,reveal_dur=0.8,reveal_bbox=(0.405,0.15,0.115,0.19),z0=1.0,z1=1.03),
+     Seg(2.2,"05_production/generated_video/C5_shelf_place.mp4","clip",hold_last=True,reveal=True,reveal_at=-9,reveal_dur=0.1,reveal_bbox=(0.405,0.15,0.115,0.19),z0=1.03,z1=1.07),
     ]
     caps=[
      dict(text="もう買えないですか？",style="bubble",t0=0.0,t1=3.4,fin=0.25,fout=0.2),
@@ -316,11 +316,11 @@ def build_C2():
      dict(text="うん、いま在庫切れ",style="cm",t0=2.6,t1=3.4,fin=0.15,fout=0.1,y=1250),
      dict(text="いつもの、1プッシュ。",style="cm",t0=3.6,t1=5.6,y=300),
      dict(text="いま、ちょっとお休み中。",style="cm",t0=5.8,t1=7.8,y=1250),
-     dict(text="でも、準備してるから。",style="cm",t0=8.0,t1=9.4,fout=0.1,y=320),
-     dict(text="戻ってくるから",style="cm_head",t0=9.4,t1=11.2,fin=0.15,y=320),
-     dict(text="Coming back soon",style="en",t0=12.2,t1=15.0,fin=0.4,fout=0.3,y=480),
-     dict(text="Get notified",style="en_sub",t0=13.6,t1=15.0,fin=0.4,fout=0.3,y=640,color=(255,255,255)),
-     dict(text="再販のお知らせはプロフィールから",style="cm",size=40,y=740,t0=13.7,t1=15.0,fin=0.4,fout=0.3,glow=8),
+     dict(text="でも、準備してるから。",style="cm",t0=8.0,t1=9.4,fout=0.1,y=1250),
+     dict(text="戻ってくるから",style="cm_head",t0=9.4,t1=11.2,fin=0.15,y=1250),
+     dict(text="Coming back soon",style="en",t0=12.2,t1=15.0,fin=0.4,fout=0.3,y=1180),
+     dict(text="Get notified",style="en_sub",t0=13.6,t1=15.0,fin=0.4,fout=0.3,y=1330,color=(255,255,255)),
+     dict(text="再販のお知らせはプロフィールから",style="cm",size=40,y=1420,t0=13.7,t1=15.0,fin=0.4,fout=0.3,glow=8),
     ]
     render(segs,caps,P("05_production","roughcuts","C_v02_roughcut.mp4"))
 

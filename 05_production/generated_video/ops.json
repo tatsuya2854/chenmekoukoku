@@ -102,5 +102,37 @@
   "sec": 6,
   "done": true,
   "file": "05_production/generated_video/B5_calf_closeup_v3.mp4"
+ },
+ "C1_hold_tilt": {
+  "op": "projects/gen-lang-client-0924303510/locations/us-central1/publishers/google/models/veo-3.1-fast-generate-001/operations/b572fc8d-8417-4c4d-95a0-aad4049e8fa0",
+  "image": "05_production/generated_hands/C1_hold_front_2.png",
+  "prompt": "The two hands holding the blank white pump bottle tilt it very slightly toward the camera by about 5 degrees and back, as if gently showing it, fingers stay on the sides. Photorealistic, warm bedside lamp light 3200K, soft shadows, shallow depth of field, natural skin texture, 24fps cinematic, vertical 9:16. The bottle is a plain matte white rounded-rectangle pump bottle with a completely blank front, NO label, NO text, NO logo; keep the bottle exactly as in the first frame. Camera completely static. Slow, calm, one single gentle motion. No new objects, no people entering.",
+  "sec": 4,
+  "done": true,
+  "file": "05_production/generated_video/C1_hold_tilt.mp4"
+ },
+ "C3_pump_press": {
+  "op": "projects/gen-lang-client-0924303510/locations/us-central1/publishers/google/models/veo-3.1-fast-generate-001/operations/952236d1-3b23-4214-aebb-746377658ce8",
+  "image": "05_production/generated_hands/B3_pump_press_2.png",
+  "prompt": "The index finger slowly presses the pump head down once; a small pearl-white dollop of cream comes out onto the cupped palm below, then the finger lifts. Photorealistic, warm bedside lamp light 3200K, soft shadows, shallow depth of field, natural skin texture, 24fps cinematic, vertical 9:16. The bottle is a plain matte white rounded-rectangle pump bottle with a completely blank front, NO label, NO text, NO logo; keep the bottle exactly as in the first frame. Camera completely static. Slow, calm, one single gentle motion. No new objects, no people entering.",
+  "sec": 4,
+  "done": true,
+  "file": "05_production/generated_video/C3_pump_press.mp4"
+ },
+ "C4_place": {
+  "op": "projects/gen-lang-client-0924303510/locations/us-central1/publishers/google/models/veo-3.1-fast-generate-001/operations/c358ff6a-43a7-42cd-80e7-c38c1a7e1bb2",
+  "image": "05_production/generated_hands/C4_place_table_1.png",
+  "prompt": "The hand gently sets the blank white pump bottle down on the white side table and slowly withdraws out of frame to the right, the bottle stays upright. Photorealistic, warm bedside lamp light 3200K, soft shadows, shallow depth of field, natural skin texture, 24fps cinematic, vertical 9:16. The bottle is a plain matte white rounded-rectangle pump bottle with a completely blank front, NO label, NO text, NO logo; keep the bottle exactly as in the first frame. Camera completely static. Slow, calm, one single gentle motion. No new objects, no people entering.",
+  "sec": 4,
+  "done": true,
+  "file": "05_production/generated_video/C4_place.mp4"
+ },
+ "C5_shelf_place": {
+  "op": "projects/gen-lang-client-0924303510/locations/us-central1/publishers/google/models/veo-3.1-fast-generate-001/operations/c113094c-a5ba-4b36-8bd6-831fc5b57d45",
+  "image": "assets/ai_sets/S3V.png",
+  "prompt": "A young woman's hand with short milky-pink nails enters from the right holding a plain matte white rounded-rectangle pump bottle with a blank front, places it upright in the empty center spot of the upper shelf compartment between the two jars, and slowly withdraws out of frame. The bottle stays perfectly still after being placed. Photorealistic, warm bedside lamp light 3200K, soft shadows, shallow depth of field, natural skin texture, 24fps cinematic, vertical 9:16. The bottle is a plain matte white rounded-rectangle pump bottle with a completely blank front, NO label, NO text, NO logo; keep the bottle exactly as in the first frame. Camera completely static. Slow, calm, one single gentle motion. No new objects, no people entering.",
+  "sec": 6,
+  "done": true,
+  "file": "05_production/generated_video/C5_shelf_place.mp4"
  }
 }
