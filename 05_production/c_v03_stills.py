@@ -12,6 +12,7 @@ SHOTS={
              "looking down at it with a soft, slightly apologetic smile, bottle front facing the camera. ", ["assets/ai_talent/R1.png"]),
  "P2_pump": ("Medium close-up from the front: the woman holds the plain white rectangular pump bottle in her left hand and rests her right index finger on the pump head, "
              "right palm cupped below the nozzle, looking down at her hands, sitting on the bed. ", ["assets/ai_talent/R1.png"]),
+ "P2b_pump": ("Close-up from the front, chest to hands: the woman holds the plain white rectangular pump bottle upright in her left hand and holds her right hand open, palm up, DIRECTLY UNDER the pump nozzle, about 3 cm below the nozzle tip, her left thumb resting on top of the pump head ready to press. The nozzle opening clearly points down at the center of her palm. She looks down at her palm, sitting on the bed. ", ["assets/ai_talent/R1.png"]),
  "P4_shelf": ("Medium-wide shot: the woman stands beside a small white two-tier cube shelf in her pink bedroom, reaching out to place the plain white rectangular pump bottle "
               "on top of the shelf next to a small vase of baby's breath and two frosted jars, seen from the side, gentle smile, warm lamp light. Use the second reference image for the shelf and room. ",
               ["assets/ai_talent/R1.png","assets/ai_sets/S3V.png"]),

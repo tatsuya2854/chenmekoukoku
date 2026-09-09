@@ -374,7 +374,8 @@ def build_C4():
     """C v04：人物版＋最後は人が消えて商品だけをズーム。18 秒。"""
     segs=[
      Seg(3.4,"05_production/generated_video/P1_hold.mp4","clip",start=0.0),
-     Seg(2.3,"05_production/generated_video/P2_pump.mp4","clip",start=0.0),
+     Seg(0.9,"05_production/generated_video/P2_pump.mp4","clip",start=0.0,z0=1.15,z1=1.18,d0=(0,0.08),d1=(0,0.09)),   # 指がポンプを押す（出る瞬間の直前で切る）
+     Seg(1.4,"05_production/composites/B4_cream_palms.png","still",z0=1.02,z1=1.08),                                        # 手にクリームが乗っている（出る瞬間は映さない）
      Seg(2.5,"05_production/generated_video/B5_calf_closeup_v3.mp4","clip",start=1.0,z0=1.3,z1=1.36,d0=(0,0.16),d1=(0,0.18)),
      Seg(3.8,"05_production/generated_video/P4_shelf.mp4","clip",start=0.6),
      Seg(6.0,"05_production/generated_video/C5_shelf_place.mp4","reveal_zoom",bbox=(0.405,0.15,0.115,0.19),z0=1.0,z1=2.3,reveal_at=0.7,reveal_dur=0.9,gain=0.92,xfade_from=True,xfade=0.5),
