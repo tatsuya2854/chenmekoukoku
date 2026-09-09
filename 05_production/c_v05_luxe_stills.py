@@ -12,8 +12,9 @@ LOCK=("Photorealistic, luxury hotel bedroom at night, warm golden lamp light, ci
 SHOTS={
  "L1_hold":  ("Medium shot: she sits on the edge of the hotel bed holding the plain white rectangular pump bottle with both hands at chest height, "
               "looking down at it with a soft, slightly apologetic smile, bottle front facing the camera. ",[FACE,LEG]),
- "L2_pump":  ("Medium close-up from the front: she holds the plain white rectangular pump bottle in her left hand and rests her right index finger on the pump head, "
-              "right palm cupped directly under the nozzle, looking down at her hands, sitting on the bed. ",[FACE,LEG]),
+ "L2_pump":  ("Medium close-up from the front, chest to hands: there is exactly ONE bottle in the whole image and she holds it in her left hand, raised at chest height; "
+              "her right index finger rests on the pump head and her right palm is cupped directly under the nozzle. NO bottle on the table, NO other bottles anywhere. "
+              "She looks down at her hands, sitting on the edge of the bed, city lights softly blurred behind. ",[FACE,LEG]),
  "L3_leg":   ("Medium shot like the second reference image: she sits on the bed edge, leaning forward, both hands gently smoothing cream on her lower leg, eyes down, calm smile, "
               "bare feet on a soft carpet, no bottle in frame. ",[FACE,LEG]),
  "L4_table": ("Medium-wide shot: she stands beside the marble side table in the hotel bedroom, reaching out to place the plain white rectangular pump bottle on the table "

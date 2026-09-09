@@ -394,5 +394,29 @@ def build_C4():
     ]
     render(segs,caps,P("05_production","roughcuts","C_v04_roughcut.mp4"),end_fade=12)
 
+def build_C5():
+    """C v05：ラグジュアリー版（v3_luxe モデル）。18 秒。人物→人が消えて商品ズーム→ラベルが灯る。"""
+    segs=[
+     Seg(3.4,"05_production/generated_video/L1_hold.mp4","clip",start=0.0),
+     Seg(0.9,"05_production/generated_video/L2_pump.mp4","clip",start=0.0,z0=1.15,z1=1.18,d0=(0,0.06),d1=(0,0.07)),
+     Seg(1.4,"05_production/generated_video/L2_pump.mp4","clip",start=1.3,speed=0.6,z0=1.7,z1=1.78,d0=(-0.02,0.16),d1=(-0.02,0.17)),
+     Seg(2.5,"05_production/generated_video/L3_leg.mp4","clip",start=1.0,z0=1.15,z1=1.2,d0=(0,0.08),d1=(0,0.1)),
+     Seg(3.8,"05_production/generated_video/L4_table.mp4","clip",start=0.6),
+     Seg(6.0,"assets/ai_sets/L5_table_empty.png","reveal_zoom",bbox=(0.335,0.685,0.135,0.18),z0=1.0,z1=2.2,reveal_at=0.7,reveal_dur=0.9,gain=0.92,xfade_from=True,xfade=0.5),
+    ]
+    caps=[
+     dict(text="もう買えないですか？",style="bubble",t0=0.0,t1=3.4,fin=0.25,fout=0.2,y=1290),
+     dict(text="ごめんね、、、",style="note",t0=1.4,t1=2.4,fin=0.2,fout=0.15,y=280,x=90),
+     dict(text="うん、いま在庫切れ",style="cm",t0=2.4,t1=3.4,fin=0.15,fout=0.1,y=1150),
+     dict(text="いつもの、1プッシュ。",style="cm",t0=3.6,t1=5.7,y=300),
+     dict(text="自分を好きになる時間を、\n脚元から。",style="cm",size=72,t0=5.9,t1=8.2,y=300),
+     dict(text="でも、準備してるから。",style="cm",t0=8.4,t1=10.0,fout=0.1,y=1250),
+     dict(text="戻ってくるから",style="cm_head",t0=10.0,t1=12.0,fin=0.15,y=1250),
+     dict(text="Coming back soon",style="en",t0=14.2,t1=18.0,fin=0.5,fout=0.3,y=360),
+     dict(text="Get notified",style="en_sub",t0=15.6,t1=18.0,fin=0.4,fout=0.3,y=500,color=(255,255,255)),
+     dict(text="再販のお知らせはプロフィールから",style="cm",size=40,y=590,t0=15.7,t1=18.0,fin=0.4,fout=0.3,glow=8),
+    ]
+    render(segs,caps,P("05_production","roughcuts","C_v05_luxe_roughcut.mp4"),end_fade=12)
+
 if __name__=="__main__":
-    for k in (sys.argv[1:] or ["A","B","C"]): {"A":build_A,"B":build_B,"C":build_C,"C2":build_C2,"C3":build_C3,"C4":build_C4}[k]()
+    for k in (sys.argv[1:] or ["A","B","C"]): {"A":build_A,"B":build_B,"C":build_C,"C2":build_C2,"C3":build_C3,"C4":build_C4,"C5":build_C5}[k]()

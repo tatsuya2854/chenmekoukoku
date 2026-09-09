@@ -158,5 +158,37 @@
   "sec": 6,
   "done": true,
   "file": "05_production/generated_video/P4_shelf.mp4"
+ },
+ "L1_hold": {
+  "op": "projects/gen-lang-client-0924303510/locations/us-central1/publishers/google/models/veo-3.1-fast-generate-001/operations/d0fc6f4d-5312-4f41-a7cd-f8f680962fad",
+  "image": "05_production/generated_c5/L1_hold_1.png",
+  "prompt": "She looks down at the bottle in her hands, then slowly lifts her eyes toward the camera with a soft, slightly apologetic smile, tilting the bottle a few degrees toward the camera. Photorealistic, luxury hotel bedroom at night, warm golden lamp light, city lights bokeh, shallow depth of field, natural skin texture, 24fps cinematic, vertical 9:16. Keep the woman's face, hair and rose-pink satin dress exactly as in the first frame. The bottle stays a plain matte white rectangular pump bottle with a blank front, NO label, NO text, NO logo. Camera completely static. Slow, calm, one gentle motion. No new objects, no other people.",
+  "sec": 4,
+  "done": true,
+  "file": "05_production/generated_video/L1_hold.mp4"
+ },
+ "L4_table": {
+  "op": "projects/gen-lang-client-0924303510/locations/us-central1/publishers/google/models/veo-3.1-fast-generate-001/operations/00506e50-8525-4d7c-86eb-ea2dfd9199df",
+  "image": "05_production/generated_c5/L4_table_1.png",
+  "prompt": "She gently releases the bottle so it stands upright on the marble table, slowly withdraws her hand, and turns her head slightly toward the camera with a soft smile. The bottle stays perfectly still after she lets go. Photorealistic, luxury hotel bedroom at night, warm golden lamp light, city lights bokeh, shallow depth of field, natural skin texture, 24fps cinematic, vertical 9:16. Keep the woman's face, hair and rose-pink satin dress exactly as in the first frame. The bottle stays a plain matte white rectangular pump bottle with a blank front, NO label, NO text, NO logo. Camera completely static. Slow, calm, one gentle motion. No new objects, no other people.",
+  "sec": 6,
+  "done": true,
+  "file": "05_production/generated_video/L4_table.mp4"
+ },
+ "L3_leg": {
+  "op": "projects/gen-lang-client-0924303510/locations/us-central1/publishers/google/models/veo-3.1-fast-generate-001/operations/ba12fe66-d325-41c9-a0ee-38e2d6330f2d",
+  "image": "05_production/generated_c5/L3_leg_2.png",
+  "prompt": "Her hands slowly glide along her lower leg from the knee down to the ankle in one unhurried stroke, smoothing the cream, eyes down with a calm smile. The bottle on the table stays perfectly still. Photorealistic, luxury hotel bedroom at night, warm golden lamp light, city lights bokeh, shallow depth of field, natural skin texture, 24fps cinematic, vertical 9:16. Keep the woman's face, hair and rose-pink satin dress exactly as in the first frame. The bottle stays a plain matte white rectangular pump bottle with a blank front, NO label, NO text, NO logo. Camera completely static. Slow, calm, one gentle motion. No new objects, no other people.",
+  "sec": 6,
+  "done": true,
+  "file": "05_production/generated_video/L3_leg.mp4"
+ },
+ "L2_pump": {
+  "op": "projects/gen-lang-client-0924303510/locations/us-central1/publishers/google/models/veo-3.1-fast-generate-001/operations/b5429ae1-c1bc-41ad-993c-2588f2bc59b7",
+  "image": "05_production/generated_c5/L2_pump_1.png",
+  "prompt": "Her right index finger slowly presses the pump head down once; a small pearl-white dollop of cream comes out of the nozzle tip onto her cupped right palm directly below; the finger lifts and she looks at the cream softly. Photorealistic, luxury hotel bedroom at night, warm golden lamp light, city lights bokeh, shallow depth of field, natural skin texture, 24fps cinematic, vertical 9:16. Keep the woman's face, hair and rose-pink satin dress exactly as in the first frame. The bottle stays a plain matte white rectangular pump bottle with a blank front, NO label, NO text, NO logo, held in her left hand the whole time. Camera completely static. Slow, calm, one gentle motion. No new objects, no other people.",
+  "sec": 4,
+  "done": true,
+  "file": "05_production/generated_video/L2_pump.mp4"
  }
 }
