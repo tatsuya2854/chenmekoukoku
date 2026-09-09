@@ -3,7 +3,7 @@
    python3 05_production/audio/mux_audio.py [入力mp4] [出力mp4]"""
 import os, sys, subprocess, shlex
 ROOT=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-A=os.path.join(ROOT,"05_production","audio")
+A=os.environ.get("AUDIO_DIR") or os.path.join(ROOT,"05_production","audio")
 SRC=sys.argv[1] if len(sys.argv)>1 else os.path.join(ROOT,"05_production","roughcuts","C_v04_roughcut.mp4")
 DST=sys.argv[2] if len(sys.argv)>2 else os.path.join(ROOT,"05_production","roughcuts","C_v04_with_audio.mp4")
 DUR=18.0

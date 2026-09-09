@@ -1,4 +1,5 @@
 # audio — C v04（18.0s）の音キューシート
+> **仮音（2026-09-09）**：フリー音源サイトがこの環境から届かないため、`make_placeholder_audio.py` で BGM（BPM85、C→G→Am→F のピアノ風＋ローファイノイズ）と SE 6 種を合成し、`placeholder/` に置いた。`AUDIO_DIR=05_production/audio/placeholder python3 05_production/audio/mux_audio.py` で `roughcuts/C_v04_placeholder_audio.mp4`（−17.4 LUFS、ピーク −0.9 dB）。**本物の音源をこのフォルダ直下に同名で置けば、同じコマンド（AUDIO_DIR なし）で差し替わる。**
 音ファイルをこのフォルダに置いて `python3 05_production/audio/mux_audio.py` を実行すると、`roughcuts/C_v04_roughcut.mp4` に音を乗せた `C_v04_with_audio.mp4` ができる。
 ラウドネス：統合 −16 LUFS、ピーク −1 dBTP。VO 基準 −14 dB、BGM は VO の −12 dB 下、SE −10〜−6 dB。
 
