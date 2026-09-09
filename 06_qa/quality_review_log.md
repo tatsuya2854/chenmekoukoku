@@ -175,3 +175,11 @@
 | 制約 | 効果音ラボ／DOVA／Pixabay／Freesound はこの環境から到達不可 → 仮音を合成（`make_placeholder_audio.py`） |
 | 出力 | `C_v04_placeholder_audio.mp4`：統合 −17.4 LUFS、ピーク −0.9 dB。キュー通りにポンプ／置く／リビールの音が当たる |
 | 次 | 本物の BGM 1 曲＋SE 6 種を `05_production/audio/` に同名で置く → `mux_audio.py` → 完成 |
+
+## ラウンド15（2026-09-09）モデル変更の依頼：ラグジュアリー路線の女性へ
+| 項目 | 内容 |
+|---|---|
+| 依頼 | ユーザー提供の AI 画像 3 枚の女性に出演者を変更 |
+| 判断 | 3 枚は同一人物ではない → `L_face_primary`（頬杖・正面）を顔の基準に固定。世界観は「ホテルの夜×サテン×夜景」に振り切る（パジャマ路線と混ぜない）。ボトルは従来通り無地→最後に実物ラベル |
+| 準備 | `assets/ai_talent/v3_luxe/`、`05_production/c_v05_luxe_stills.py`（L1 持つ／L2 ポンプ／L3 脚／L4 置く） |
+| 待ち | OAuth トークン。来たら 静止画→Veo→C v05 を組む |
