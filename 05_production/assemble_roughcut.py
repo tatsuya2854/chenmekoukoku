@@ -160,10 +160,13 @@ def render(segs,captions,out_path,end_fade=8):
     os.makedirs(os.path.dirname(out_path),exist_ok=True)
     tmp=out_path.replace(".mp4","_raw.mp4"); vw=cv2.VideoWriter(tmp,cv2.VideoWriter_fourcc(*"mp4v"),FPS,(W,H))
     total=sum(s.dur for s in segs); N=int(round(total*FPS)); cache={}
-    t_acc=0.0; seg_i=0; seg_start=0.0; last=None
+    bounds=[0]
+    for sg in segs: bounds.append(bounds[-1]+int(round(sg.dur*FPS)))   # フレーム単位の境界（浮動小数のズレ防止）
+    last=None; last_raw=None; last_prev=None
     for n in range(N):
         t=n/FPS
-        while seg_i<len(segs)-1 and t>=seg_start+segs[seg_i].dur: seg_start+=segs[seg_i].dur; seg_i+=1
+        seg_i=max(i for i in range(len(segs)) if bounds[i]<=n) if n<bounds[-1] else len(segs)-1
+        seg_start=bounds[seg_i]/FPS; first=(n==bounds[seg_i])
         s=segs[seg_i]; lt=t-seg_start; kw=s.kw
         if s.kind=="still":
             if s.src not in cache:
@@ -197,15 +200,33 @@ def render(segs,captions,out_path,end_fade=8):
                 img=cv2.addWeighted(fr[-1],1-a,labeled,a,0)
             z,dx,dy=kb(lt,s.dur,kw.get("z0",1.0),kw.get("z1",1.0),kw.get("d0",(0,0)),kw.get("d1",(0,0)))
             f=cover(img,z,dx,dy)
+        elif s.kind=="reveal_zoom":
+            # src: 動画（最終フレーム）or 静止画。bbox は元画像の比率。ボトル中心へ寄りながらラベルをリビール。
+            if s.src not in cache:
+                base=last_frame(s.src) if s.src.endswith(".mp4") else cv2.imread(P(s.src)); cache[s.src]=base
+            base=cache[s.src]; h,w=base.shape[:2]; bx,by,bw,bh=kw["bbox"]
+            cxs,cys=(bx+bw/2)*w,(by+bh*0.55)*h                      # ボトルの中心（少し下寄り）
+            u=min(1,lt/s.dur); u=u*u*(3-2*u); z=kw.get("z0",1.0)+(kw.get("z1",2.2)-kw.get("z0",1.0))*u
+            sc=max(W/w,H/h)*z
+            # 画面中心をボトル中心へ寄せる（u に応じて）
+            tx=(w/2-cxs)*sc*kw.get("center",1.0)*u; ty=(h/2-cys)*sc*kw.get("center",1.0)*u
+            M=np.float32([[sc,0,W/2-w/2*sc+tx],[0,sc,H/2-h/2*sc+ty]])
+            f=cv2.warpAffine(base,M,(W,H),flags=cv2.INTER_LINEAR,borderMode=cv2.BORDER_REFLECT)
+            # 出力座標での bbox
+            ox=(bx*w)*sc+M[0,2]; oy=(by*h)*sc+M[1,2]; obw=bw*w*sc; obh=bh*h*sc
+            labeled=paste_bottle(f,(ox/W,oy/H,obw/W,obh/H),gain=kw.get("gain",0.9),shadow=False)
+            a=min(1.0,max(0.0,(lt-kw.get("reveal_at",0.6))/kw.get("reveal_dur",0.8)))
+            f=cv2.addWeighted(f,1-a,labeled,a,0)
         elif s.kind=="solid":
             f=np.zeros((H,W,3),np.uint8); f[:]=s.src
         if "dark" in kw: f=(f.astype(np.float32)*kw["dark"]).astype(np.uint8)
         if "dark_ramp" in kw:  # (a0,a1)
             a0,a1=kw["dark_ramp"]; f=(f.astype(np.float32)*(a0+(a1-a0)*lt/s.dur)).astype(np.uint8)
         f=grade(f)
-        if kw.get("xfade_from") is not None and lt<kw.get("xfade",0.5) and last is not None:
+        if first: last_prev=last_raw if last_raw is not None else f
+        if kw.get("xfade_from") is not None and lt<kw.get("xfade",0.5) and last_prev is not None:
             a=lt/kw["xfade"]; f=cv2.addWeighted(last_prev,1-a,f,a,0)
-        if lt<1/FPS: last_prev=last if last is not None else f
+        last_raw=f.copy()
         # captions
         for c in captions:
             a=fade_a(t,c["t0"],c["t1"],c.get("fin",0.25),c.get("fout",0.2))
@@ -349,5 +370,28 @@ def build_C3():
     ]
     render(segs,caps,P("05_production","roughcuts","C_v03_roughcut.mp4"))
 
+def build_C4():
+    """C v04：人物版＋最後は人が消えて商品だけをズーム。18 秒。"""
+    segs=[
+     Seg(3.4,"05_production/generated_video/P1_hold.mp4","clip",start=0.0),
+     Seg(2.3,"05_production/generated_video/P2_pump.mp4","clip",start=0.0),
+     Seg(2.5,"05_production/generated_video/B5_calf_closeup_v3.mp4","clip",start=1.0,z0=1.3,z1=1.36,d0=(0,0.16),d1=(0,0.18)),
+     Seg(3.8,"05_production/generated_video/P4_shelf.mp4","clip",start=0.6),
+     Seg(6.0,"05_production/generated_video/C5_shelf_place.mp4","reveal_zoom",bbox=(0.405,0.15,0.115,0.19),z0=1.0,z1=2.3,reveal_at=0.7,reveal_dur=0.9,gain=0.92,xfade_from=True,xfade=0.5),
+    ]
+    caps=[
+     dict(text="もう買えないですか？",style="bubble",t0=0.0,t1=3.4,fin=0.25,fout=0.2,y=1290),
+     dict(text="ごめんね、、、",style="note",t0=1.4,t1=2.4,fin=0.2,fout=0.15,y=280,x=90),
+     dict(text="うん、いま在庫切れ",style="cm",t0=2.4,t1=3.4,fin=0.15,fout=0.1,y=1150),
+     dict(text="いつもの、1プッシュ。",style="cm",t0=3.6,t1=5.7,y=300),
+     dict(text="今日も、おつかれ。",style="cm",t0=5.9,t1=8.2,y=300),
+     dict(text="でも、準備してるから。",style="cm",t0=8.4,t1=10.0,fout=0.1,y=1250),
+     dict(text="戻ってくるから",style="cm_head",t0=10.0,t1=12.0,fin=0.15,y=1250),
+     dict(text="Coming back soon",style="en",t0=14.2,t1=18.0,fin=0.5,fout=0.3,y=360),
+     dict(text="Get notified",style="en_sub",t0=15.6,t1=18.0,fin=0.4,fout=0.3,y=500,color=(255,255,255)),
+     dict(text="再販のお知らせはプロフィールから",style="cm",size=40,y=590,t0=15.7,t1=18.0,fin=0.4,fout=0.3,glow=8),
+    ]
+    render(segs,caps,P("05_production","roughcuts","C_v04_roughcut.mp4"),end_fade=12)
+
 if __name__=="__main__":
-    for k in (sys.argv[1:] or ["A","B","C"]): {"A":build_A,"B":build_B,"C":build_C,"C2":build_C2,"C3":build_C3}[k]()
+    for k in (sys.argv[1:] or ["A","B","C"]): {"A":build_A,"B":build_B,"C":build_C,"C2":build_C2,"C3":build_C3,"C4":build_C4}[k]()
