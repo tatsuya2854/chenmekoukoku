@@ -211,7 +211,7 @@ def render(segs,captions,out_path,end_fade=8):
             a=fade_a(t,c["t0"],c["t1"],c.get("fin",0.25),c.get("fout",0.2))
             if a<=0: continue
             pop=0.94+0.06*min(1,(t-c["t0"])/0.25)   # ポップイン
-            if c["style"]=="bubble": f=bubble(f,c["text"],a)
+            if c["style"]=="bubble": f=bubble(f,c["text"],a,y=c.get("y",380))
             else:
                 st=c["style"]
                 fnt={"body":F_BODY(c.get("size",64)),"head":F_HEAD(c.get("size",92)),"en":F_EN(c.get("size",104)),"en_sub":F_EN(c.get("size",52)),
@@ -324,5 +324,30 @@ def build_C2():
     ]
     render(segs,caps,P("05_production","roughcuts","C_v02_roughcut.mp4"))
 
+def build_C3():
+    """C v03：パジャマの AI 出演者が演じる版。無地ボトル → 最後に実物ラベルがリビール。"""
+    RB=(0.32,0.385,0.087,0.11)   # P4 最終フレームの無地ボトル位置（棚の上）
+    segs=[
+     Seg(3.4,"05_production/generated_video/P1_hold.mp4","clip",start=0.0),
+     Seg(2.3,"05_production/generated_video/P2_pump.mp4","clip",start=0.0),
+     Seg(2.5,"05_production/generated_video/B5_calf_closeup_v3.mp4","clip",start=1.0,z0=1.25,z1=1.3,d0=(0,0.12),d1=(0,0.14)),
+     Seg(3.4,"05_production/generated_video/P4_shelf.mp4","clip",start=0.4),
+     Seg(1.4,"05_production/generated_video/P4_shelf.mp4","clip",hold_last=True,reveal=True,reveal_at=0.2,reveal_dur=0.8,reveal_bbox=RB,z0=1.0,z1=1.06,d0=(-0.06,0.0),d1=(-0.08,-0.02)),
+     Seg(2.0,"05_production/generated_video/P4_shelf.mp4","clip",hold_last=True,reveal=True,reveal_at=-9,reveal_dur=0.1,reveal_bbox=RB,z0=1.06,z1=1.16,d0=(-0.08,-0.02),d1=(-0.12,-0.04)),
+    ]
+    caps=[
+     dict(text="もう買えないですか？",style="bubble",t0=0.0,t1=3.4,fin=0.25,fout=0.2,y=1290),
+     dict(text="ごめんね、、、",style="note",t0=1.4,t1=2.4,fin=0.2,fout=0.15,y=280,x=90),
+     dict(text="うん、いま在庫切れ",style="cm",t0=2.4,t1=3.4,fin=0.15,fout=0.1,y=1150),
+     dict(text="いつもの、1プッシュ。",style="cm",t0=3.6,t1=5.7,y=1250),
+     dict(text="今日も、おつかれ。",style="cm",t0=5.9,t1=8.2,y=300),
+     dict(text="でも、準備してるから。",style="cm",t0=8.4,t1=9.8,fout=0.1,y=1250),
+     dict(text="戻ってくるから",style="cm_head",t0=9.8,t1=11.6,fin=0.15,y=1250),
+     dict(text="Coming back soon",style="en",t0=12.4,t1=15.0,fin=0.4,fout=0.3,y=1180),
+     dict(text="Get notified",style="en_sub",t0=13.6,t1=15.0,fin=0.4,fout=0.3,y=1330,color=(255,255,255)),
+     dict(text="再販のお知らせはプロフィールから",style="cm",size=40,y=1420,t0=13.7,t1=15.0,fin=0.4,fout=0.3,glow=8),
+    ]
+    render(segs,caps,P("05_production","roughcuts","C_v03_roughcut.mp4"))
+
 if __name__=="__main__":
-    for k in (sys.argv[1:] or ["A","B","C"]): {"A":build_A,"B":build_B,"C":build_C,"C2":build_C2}[k]()
+    for k in (sys.argv[1:] or ["A","B","C"]): {"A":build_A,"B":build_B,"C":build_C,"C2":build_C2,"C3":build_C3}[k]()

@@ -134,5 +134,29 @@
   "sec": 6,
   "done": true,
   "file": "05_production/generated_video/C5_shelf_place.mp4"
+ },
+ "P1_hold": {
+  "op": "projects/gen-lang-client-0924303510/locations/us-central1/publishers/google/models/veo-3.1-fast-generate-001/operations/afa53bdb-4c88-4e3f-a1bd-eabfd5cf56da",
+  "image": "05_production/generated_c3/P1_hold_2.png",
+  "prompt": "She looks down at the bottle in her hands, then slowly lifts her eyes toward the camera with a small, slightly apologetic smile, tilting the bottle a few degrees toward the camera. Photorealistic, warm bedside lamp light 3200K, soft shadows, shallow depth of field, natural skin texture, 24fps cinematic, vertical 9:16. Keep the woman's face and pastel pink pajamas exactly as in the first frame. The bottle stays a plain matte white rectangular pump bottle with a blank front, NO label, NO text, NO logo. Camera completely static. Slow, calm, one gentle motion. No new objects, no other people.",
+  "sec": 4,
+  "done": true,
+  "file": "05_production/generated_video/P1_hold.mp4"
+ },
+ "P2_pump": {
+  "op": "projects/gen-lang-client-0924303510/locations/us-central1/publishers/google/models/veo-3.1-fast-generate-001/operations/30087ddf-e45c-4376-b849-8339fa334436",
+  "image": "05_production/generated_c3/P2_pump_1.png",
+  "prompt": "Her index finger slowly presses the pump head down once; a small pearl-white dollop of cream comes out onto her cupped palm; she looks at it softly and the finger lifts. Photorealistic, warm bedside lamp light 3200K, soft shadows, shallow depth of field, natural skin texture, 24fps cinematic, vertical 9:16. Keep the woman's face and pastel pink pajamas exactly as in the first frame. The bottle stays a plain matte white rectangular pump bottle with a blank front, NO label, NO text, NO logo. Camera completely static. Slow, calm, one gentle motion. No new objects, no other people.",
+  "sec": 4,
+  "done": true,
+  "file": "05_production/generated_video/P2_pump.mp4"
+ },
+ "P4_shelf": {
+  "op": "projects/gen-lang-client-0924303510/locations/us-central1/publishers/google/models/veo-3.1-fast-generate-001/operations/37b7e9fa-4bcf-44e5-9c9f-47152a186abe",
+  "image": "05_production/generated_c3/P4_shelf_1.png",
+  "prompt": "She gently releases the bottle so it stands upright on top of the shelf, slowly withdraws her hand, and turns her head slightly toward the camera with a soft smile. The bottle stays perfectly still after she lets go. Photorealistic, warm bedside lamp light 3200K, soft shadows, shallow depth of field, natural skin texture, 24fps cinematic, vertical 9:16. Keep the woman's face and pastel pink pajamas exactly as in the first frame. The bottle stays a plain matte white rectangular pump bottle with a blank front, NO label, NO text, NO logo. Camera completely static. Slow, calm, one gentle motion. No new objects, no other people.",
+  "sec": 6,
+  "done": true,
+  "file": "05_production/generated_video/P4_shelf.mp4"
  }
 }
