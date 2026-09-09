@@ -7,7 +7,7 @@ A/B/C 案のラフカット（アニマティクス）を 1080x1920 / 24fps で�
 規定: 01_brandbook §5（テロップ）§6（映像）。ボトルは均等スケール＋位置のみ。
 """
 import cv2, numpy as np, os, sys, subprocess, math
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
 W,H,FPS=1080,1920,24
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 P=lambda *a: os.path.join(ROOT,*a)
@@ -30,6 +30,7 @@ def font(name,size,wght=None):
 F_BODY=lambda s=64: font("NotoSansJP[wght].ttf",s,700)     # 太字・座布団
 F_HEAD=lambda s=92: font("NotoSansJP[wght].ttf",s,800)     # 見出し
 F_EN=lambda s=104: font("CormorantGaramond[wght].ttf",s,500)
+F_CM=lambda s=80: font("KleeOne-SemiBold.ttf",s)          # CM風・白・手書き（座布団なし）
 
 # ---------- ブランドグレード（全カット共通） ----------
 _VIG=None
@@ -89,7 +90,7 @@ def _segments(text):
         else: out.append((part,False))
     return out
 
-def draw_text(frame,text,fnt,color,y,alpha=1.0,pill=True,pill_color=MILK,emph=ROSE,tracking=0,scale=1.0,x=None):
+def draw_text(frame,text,fnt,color,y,alpha=1.0,pill=True,pill_color=MILK,emph=ROSE,tracking=0,scale=1.0,x=None,glow=0):
     """y は座布団の中心。pill=True で白い角丸座布団。scale はポップイン用。"""
     im=bgr2pil(frame).convert("RGBA"); layer=Image.new("RGBA",im.size,(0,0,0,0)); d=ImageDraw.Draw(layer)
     lines=text.split("\n"); size=fnt.size; lh=size*1.3
@@ -105,6 +106,13 @@ def draw_text(frame,text,fnt,color,y,alpha=1.0,pill=True,pill_color=MILK,emph=RO
     if pill:
         x0=(W-bw)/2-padx if x is None else x-padx
         d.rounded_rectangle((x0,top-pady,x0+bw+2*padx,top+total_h+pady),radius=int(size*0.42),fill=pill_color+(int(235*alpha),))
+    if glow:   # 白文字の周りに淡いピンク白の発光（CM風）
+        gl=Image.new("RGBA",im.size,(0,0,0,0)); gd=ImageDraw.Draw(gl)
+        for i,line in enumerate(lines):
+            cx=(W-widths[i])/2 if x is None else x; cy=top+i*lh+lh*0.12
+            for seg,_ in _segments(line):
+                for ch in seg: gd.text((cx,cy),ch,font=fnt,fill=(255,236,240,int(190*alpha))); cx+=d.textlength(ch,font=fnt)+tracking
+        gl=gl.filter(ImageFilter.GaussianBlur(glow)); layer=Image.alpha_composite(layer,gl); d=ImageDraw.Draw(layer)
     for i,line in enumerate(lines):
         cx=(W-widths[i])/2 if x is None else x; cy=top+i*lh+lh*0.12
         for seg,em in _segments(line):
@@ -182,11 +190,15 @@ def render(segs,captions,out_path,end_fade=8):
             if c["style"]=="bubble": f=bubble(f,c["text"],a)
             else:
                 st=c["style"]
-                fnt={"body":F_BODY(c.get("size",64)),"head":F_HEAD(c.get("size",92)),"en":F_EN(c.get("size",104)),"en_sub":F_EN(c.get("size",52))}[st]
-                col={"body":CHARCOAL,"head":CHARCOAL,"en":c.get("color",ROSE),"en_sub":c.get("color",CHARCOAL)}[st]
-                yy=c.get("y",{"body":1300,"head":1280,"en":1150,"en_sub":1290}[st])
+                fnt={"body":F_BODY(c.get("size",64)),"head":F_HEAD(c.get("size",92)),"en":F_EN(c.get("size",104)),"en_sub":F_EN(c.get("size",52)),
+                     "cm":F_CM(c.get("size",80)),"cm_head":F_CM(c.get("size",100)),"note":F_CM(c.get("size",60))}[st]
+                col={"body":CHARCOAL,"head":CHARCOAL,"en":c.get("color",ROSE),"en_sub":c.get("color",CHARCOAL),"cm":(255,255,255),"cm_head":(255,255,255),"note":(255,255,255)}[st]
+                yy=c.get("y",{"body":1300,"head":1280,"en":1150,"en_sub":1290,"cm":1250,"cm_head":1240,"note":330}[st])
                 pill=c.get("pill", st in ("body","head"))
-                f=draw_text(f,c["text"],fnt,col,yy,a,pill=pill,pill_color=c.get("pill_color",MILK),tracking=c.get("tracking",8 if st in("en","en_sub") else 0),scale=pop if st!="en" else 1.0)
+                is_cm=st in ("cm","cm_head","note")
+                f=draw_text(f,re.sub(r"[【】]","",c["text"]) if is_cm else c["text"],fnt,col,yy,a,pill=pill,pill_color=c.get("pill_color",MILK),
+                            tracking=c.get("tracking",8 if st in("en","en_sub") else (4 if is_cm else 0)),scale=1.0 if (st=="en" or is_cm) else pop,
+                            glow=c.get("glow",16 if is_cm else 0),x=c.get("x"))
         if n>N-end_fade: f=(f.astype(np.float32)*((N-n)/end_fade)).astype(np.uint8)
         vw.write(f); last=f
     vw.release()
@@ -250,16 +262,16 @@ def build_C():
     ]
     caps=[
      dict(text="もう買えないですか？",style="bubble",t0=0.0,t1=3.4,fin=0.25,fout=0.2),
-     dict(text="ごめんね、、、",style="body",t0=1.6,t1=2.5,fin=0.15,fout=0.1,y=300),
-     dict(text="うん、いま【在庫切れ】",style="body",t0=2.5,t1=3.4,fin=0.15,fout=0.1,y=300),
-     dict(text="ラベルの子、かわいいでしょ",style="body",t0=3.5,t1=5.6,y=300),
-     dict(text="いま、ちょっと【お休み中】。",style="body",t0=5.7,t1=7.8),
-     dict(text="でも、準備してるから。",style="body",t0=7.9,t1=9.0,fout=0.1,y=300),
-     dict(text="【戻ってくる】から",style="head",t0=9.0,t1=10.2,fin=0.15,y=300),
-     dict(text="戻ってくる日が決まったら、\nいちばんに。",style="body",t0=10.4,t1=12.0,y=300),
+     dict(text="ごめんね、、、",style="note",t0=1.6,t1=2.6,fin=0.2,fout=0.15,y=280,x=90),
+     dict(text="うん、いま在庫切れ",style="cm",t0=2.6,t1=3.4,fin=0.15,fout=0.1,y=1250),
+     dict(text="ラベルの子、かわいいでしょ",style="cm",t0=3.5,t1=5.6,y=300),
+     dict(text="いま、ちょっとお休み中。",style="cm",t0=5.7,t1=7.8,y=1250),
+     dict(text="でも、準備してるから。",style="cm",t0=7.9,t1=9.0,fout=0.1,y=320),
+     dict(text="戻ってくるから",style="cm_head",t0=9.0,t1=10.2,fin=0.15,y=320),
+     dict(text="戻ってくる日が決まったら、\nいちばんに。",style="cm",t0=10.4,t1=12.0,y=300),
      dict(text="Coming back soon",style="en",t0=12.1,t1=15.0,fin=0.4,fout=0.3,y=480),
-     dict(text="Get notified",style="en_sub",t0=13.7,t1=15.0,fin=0.4,fout=0.3,y=640),
-     dict(text="再販のお知らせはプロフィールから",style="body",size=40,y=740,t0=13.8,t1=15.0,fin=0.4,fout=0.3,pill=False),
+     dict(text="Get notified",style="en_sub",t0=13.7,t1=15.0,fin=0.4,fout=0.3,y=640,color=(255,255,255)),
+     dict(text="再販のお知らせはプロフィールから",style="cm",size=40,y=740,t0=13.8,t1=15.0,fin=0.4,fout=0.3,glow=8),
     ]
     render(segs,caps,P("05_production","roughcuts","C_v01_roughcut.mp4"))
 
