@@ -139,6 +139,21 @@ def fade_a(t,t0,t1,fin=0.3,fout=0.25):
     if t<t0 or t>t1: return 0.0
     return min(1.0,(t-t0)/fin,(t1-t)/fout,1.0) if (t1-t0)>fin+fout else min(1,(t-t0)/fin)
 
+def find_plain_bottle(frame,region=(0.30,0.30,0.70,0.60)):
+    """指定領域内で「白くて低彩度で縦長」の最大ブロブ＝無地ボトルを探し、bbox（比率）を返す。見つからなければ None。"""
+    h,w=frame.shape[:2]; x0,y0,x1,y1=[int(v*d) for v,d in zip(region,(w,h,w,h))]
+    hsv=cv2.cvtColor(frame,cv2.COLOR_BGR2HSV); m=((hsv[:,:,1]<40)&(hsv[:,:,2]>175)).astype(np.uint8)*255
+    mask=np.zeros_like(m); mask[y0:y1,x0:x1]=m[y0:y1,x0:x1]; mask=cv2.morphologyEx(mask,cv2.MORPH_OPEN,np.ones((5,5),np.uint8))
+    n,lab,st,_=cv2.connectedComponentsWithStats(mask); best=None
+    for i in range(1,n):
+        x,y,bw,bh,a=st[i]
+        if bh<bw*1.3 or a<400: continue
+        if best is None or a>best[0]: best=(a,(x/w,y/h,bw/w,bh/h))
+    return best[1] if best else None
+
+def last_frame(path):
+    fr=read_clip(P(path)); return fr[-1]
+
 class Seg:
     def __init__(s,dur,src,kind,**kw): s.dur=dur; s.src=src; s.kind=kind; s.kw=kw
 def render(segs,captions,out_path,end_fade=8):
@@ -170,7 +185,16 @@ def render(segs,captions,out_path,end_fade=8):
             if s.src not in cache: cache[s.src]=read_clip(P(s.src))
             fr=cache[s.src]
             idx=min(int((kw.get("start",0)+lt*kw.get("speed",1.0))*FPS),len(fr)-1); img=fr[idx]
+            if kw.get("hold_last"): img=fr[-1]
             if kw.get("bottle"): img=paste_bottle(img,kw["bottle"],gain=kw.get("gain",0.9))
+            if kw.get("reveal"):   # 無地ボトル → 実物ラベルが浮かび上がる（最終フレームの無地ボトル位置に合成し、クロスフェード）
+                key=("reveal",s.src)
+                if key not in cache:
+                    bb=find_plain_bottle(fr[-1],kw.get("reveal_region",(0.30,0.30,0.70,0.60))) or CFG["S3V_empty_spot"]
+                    cache[key]=(bb,paste_bottle(fr[-1],bb,gain=kw.get("gain",0.92),shadow=False))
+                bb,labeled=cache[key]
+                a=min(1.0,max(0.0,(lt-kw.get("reveal_at",0.0))/kw.get("reveal_dur",0.6)))
+                img=cv2.addWeighted(fr[-1],1-a,labeled,a,0)
             z,dx,dy=kb(lt,s.dur,kw.get("z0",1.0),kw.get("z1",1.0),kw.get("d0",(0,0)),kw.get("d1",(0,0)))
             f=cover(img,z,dx,dy)
         elif s.kind=="solid":
@@ -275,5 +299,30 @@ def build_C():
     ]
     render(segs,caps,P("05_production","roughcuts","C_v01_roughcut.mp4"))
 
+def build_C2():
+    """C v02：動きあり。無地ボトルの Veo クリップ 4 本 → 最後だけ実物ラベルが浮かび上がる。"""
+    segs=[
+     Seg(1.6,"05_production/generated_video/C1_hold_tilt.mp4","clip",start=0.0),
+     Seg(1.8,"05_production/generated_video/C1_hold_tilt.mp4","clip",start=1.6),
+     Seg(2.2,"05_production/generated_video/C3_pump_press.mp4","clip",start=0.4),
+     Seg(2.2,"05_production/generated_video/C4_place.mp4","clip",start=0.6),
+     Seg(3.6,"05_production/generated_video/C5_shelf_place.mp4","clip",start=0.6),
+     Seg(1.4,"05_production/generated_video/C5_shelf_place.mp4","clip",hold_last=True,reveal=True,reveal_at=0.2,reveal_dur=0.8,z0=1.0,z1=1.03),
+     Seg(2.2,"05_production/generated_video/C5_shelf_place.mp4","clip",hold_last=True,reveal=True,reveal_at=-9,reveal_dur=0.1,z0=1.03,z1=1.07),
+    ]
+    caps=[
+     dict(text="もう買えないですか？",style="bubble",t0=0.0,t1=3.4,fin=0.25,fout=0.2),
+     dict(text="ごめんね、、、",style="note",t0=1.6,t1=2.6,fin=0.2,fout=0.15,y=280,x=90),
+     dict(text="うん、いま在庫切れ",style="cm",t0=2.6,t1=3.4,fin=0.15,fout=0.1,y=1250),
+     dict(text="いつもの、1プッシュ。",style="cm",t0=3.6,t1=5.6,y=300),
+     dict(text="いま、ちょっとお休み中。",style="cm",t0=5.8,t1=7.8,y=1250),
+     dict(text="でも、準備してるから。",style="cm",t0=8.0,t1=9.4,fout=0.1,y=320),
+     dict(text="戻ってくるから",style="cm_head",t0=9.4,t1=11.2,fin=0.15,y=320),
+     dict(text="Coming back soon",style="en",t0=12.2,t1=15.0,fin=0.4,fout=0.3,y=480),
+     dict(text="Get notified",style="en_sub",t0=13.6,t1=15.0,fin=0.4,fout=0.3,y=640,color=(255,255,255)),
+     dict(text="再販のお知らせはプロフィールから",style="cm",size=40,y=740,t0=13.7,t1=15.0,fin=0.4,fout=0.3,glow=8),
+    ]
+    render(segs,caps,P("05_production","roughcuts","C_v02_roughcut.mp4"))
+
 if __name__=="__main__":
-    for k in (sys.argv[1:] or ["A","B","C"]): {"A":build_A,"B":build_B,"C":build_C}[k]()
+    for k in (sys.argv[1:] or ["A","B","C"]): {"A":build_A,"B":build_B,"C":build_C,"C2":build_C2}[k]()
